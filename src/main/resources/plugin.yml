@@ -1,0 +1,7 @@
+version: "0.1-SNAPSHOT"
+api-version: "1.15"
+name: "purifier"
+main: "net.nachtbeere.minecraft.purifier.Purifier"
+description: "A RESTful API Endpoint Plugin for Bukkit/Spigot Server"
+author: "Mirai Kim(github: noxowl)"
+website: "https://github.com/Nachtbeere/Purifier"
