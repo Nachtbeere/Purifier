@@ -25,6 +25,26 @@ class CurrentUsersModel(val total: Int,
     }
 }
 
+class CurrentTimeModel(val worldName: String,
+                       val currentTime: GameTimeModel) {
+    override fun toString(): String {
+        return ""
+    }
+}
+
+class GameWorldsModel(val worlds: ArrayList<*>) {
+    override fun toString(): String {
+        return ""
+    }
+}
+
+class GameTimeModel(val time: Long,
+                    val age: Long) {
+    override fun toString(): String {
+        return ""
+    }
+}
+
 class LocationModel(val world: String,
                     val x: Double,
                     val y: Double,

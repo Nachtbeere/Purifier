@@ -15,4 +15,8 @@ class Purifier : JavaPlugin() {
     override fun onDisable() {
         this.purifierServer.stop()
     }
+
+    fun log(msg: String) {
+        this.logger.info(msg)
+    }
 }
