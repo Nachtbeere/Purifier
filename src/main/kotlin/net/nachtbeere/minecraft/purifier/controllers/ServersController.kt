@@ -3,7 +3,7 @@ package net.nachtbeere.minecraft.purifier.controllers
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.*
 import net.nachtbeere.minecraft.purifier.*
-import org.eclipse.jetty.websocket.api.StatusCode
+import org.eclipse.jetty.http.HttpStatus
 
 object PurifierServersController : PurifierControllerBase() {
     @OpenApi(
@@ -35,9 +35,25 @@ object PurifierServersController : PurifierControllerBase() {
         if (payload != null) {
             ctx.json(payload)
         } else {
-            ctx.status(StatusCode.SERVER_ERROR)
+            ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
             ctx.json(CommonResponseModel(result = "FAILED"))
         }
+    }
+
+    fun addWhitelist(ctx: Context) {
+//        bukkitServer.whi
+    }
+
+    fun removeWhitelist(ctx: Context) {
+
+    }
+
+    fun addOpList(ctx: Context) {
+//        bukkitServer.whi
+    }
+
+    fun removeOpList(ctx: Context) {
+
     }
 
     @OpenApi(
@@ -58,7 +74,7 @@ object PurifierServersController : PurifierControllerBase() {
         if (payload != null) {
             ctx.json(payload)
         } else {
-            ctx.status(StatusCode.SERVER_ERROR)
+            ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
             ctx.json(CommonResponseModel(result = "FAILED"))
         }
     }
@@ -70,7 +86,7 @@ object PurifierServersController : PurifierControllerBase() {
     )
     fun reload(ctx: Context) {
         this.log("Reload Request Accepted.")
-        this.futureTaskLater { bukkitServer.reload() }
+        this.futureTaskLater(3) { bukkitServer.reload() }
         val payload = CommonResponseModel(result = "SUCCESS")
         ctx.json(payload)
     }

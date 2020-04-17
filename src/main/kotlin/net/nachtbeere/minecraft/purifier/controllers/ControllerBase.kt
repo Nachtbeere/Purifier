@@ -10,7 +10,7 @@ open class PurifierControllerBase() {
     var currentPlugin: Plugin = currentPlugin()
 
     private fun bukkitServer(): Server {
-        return Bukkit.getServer() as Server
+        return Bukkit.getServer()
     }
 
     private fun currentPlugin(): Plugin {
@@ -39,8 +39,8 @@ open class PurifierControllerBase() {
         }
     }
 
-    fun futureTaskLater(task: () -> Any) {
-        this.bukkitServer.scheduler.runTaskLater(this.currentPlugin, Runnable { task() }, 60)
+    fun futureTaskLater(seconds: Long, task: () -> Any) {
+        this.bukkitServer.scheduler.runTaskLater(this.currentPlugin, Runnable { task() }, (20 * seconds))
     }
 }
 

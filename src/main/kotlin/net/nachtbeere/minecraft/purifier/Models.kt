@@ -6,6 +6,10 @@ class CommonResponseModel(val result: String) {
     }
 }
 
+class SetTimeModel(val moment: String)
+
+class SetManualTimeModel(val time: Long)
+
 class ServerInfoModel(val version: String,
                       val basedOn: String,
                       val motd: String,
@@ -18,7 +22,7 @@ class ServerInfoModel(val version: String,
     }
 }
 
-class CurrentUsersModel(val total: Int,
+class UsersModel(val total: Int,
                         val users: ArrayList<UserModel>) {
     override fun toString(): String {
         return ""

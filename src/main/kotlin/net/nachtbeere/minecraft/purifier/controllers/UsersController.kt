@@ -5,17 +5,16 @@ import io.javalin.plugin.openapi.annotations.OpenApi
 import io.javalin.plugin.openapi.annotations.OpenApiContent
 import io.javalin.plugin.openapi.annotations.OpenApiResponse
 import net.nachtbeere.minecraft.purifier.*
-import org.eclipse.jetty.websocket.api.StatusCode
+import org.eclipse.jetty.http.HttpStatus
 
 object PurifierUsersController : PurifierControllerBase() {
     @OpenApi(
         responses = [
-            OpenApiResponse(status = "200", content = [OpenApiContent(CurrentUsersModel::class)]),
-            OpenApiResponse(status = "500", content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiResponse(status = HttpStatus.OK_200.toString(), content = [OpenApiContent(UsersModel::class)]),
+            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(), content = [OpenApiContent(CommonResponseModel::class)])
         ]
     )
-    fun currentUsers(ctx: Context)  {
-        this.log("Current User List Request Accepted.")
+    fun onlineUsers(ctx: Context)  {
         val payload = futureTask {
             val currentUsers = bukkitServer.onlinePlayers
             val users = arrayListOf<UserModel>()
@@ -37,7 +36,7 @@ object PurifierUsersController : PurifierControllerBase() {
                         )
                 )
             }
-            CurrentUsersModel(
+            UsersModel(
                     total=currentUsers.size,
                     users=users
             )
@@ -45,7 +44,48 @@ object PurifierUsersController : PurifierControllerBase() {
         if (payload != null) {
             ctx.json(payload)
         } else {
-            ctx.status(StatusCode.SERVER_ERROR)
+            ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
+            ctx.json(CommonResponseModel(result = "FAILED"))
+        }
+    }
+
+    @OpenApi(
+        responses = [
+            OpenApiResponse(status = HttpStatus.OK_200.toString(), content = [OpenApiContent(UsersModel::class)]),
+            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(), content = [OpenApiContent(CommonResponseModel::class)])
+        ]
+    )
+    fun offlineUsers(ctx: Context) {
+        val payload = futureTask {
+            val currentUsers = bukkitServer.offlinePlayers
+            val users = arrayListOf<UserModel>()
+            currentUsers.iterator().forEach { p ->
+                users.add(
+                    UserModel(
+                        username = "",
+                        locale = "",
+                        level = 0,
+                        exp = 0.toFloat(),
+                        hunger = 0,
+                        vital = 0.toDouble(),
+                        location = LocationModel(
+                            world = "",
+                            x = 0.toDouble(),
+                            y = 0.toDouble(),
+                            z = 0.toDouble()
+                        )
+                    )
+                )
+            }
+            UsersModel(
+                total=currentUsers.size,
+                users=users
+            )
+        }
+        if (payload != null) {
+            ctx.json(payload)
+        } else {
+            ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
             ctx.json(CommonResponseModel(result = "FAILED"))
         }
     }
