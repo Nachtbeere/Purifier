@@ -1,9 +1,19 @@
 package net.nachtbeere.minecraft.purifier.controllers
 
 import io.javalin.http.Context
+import io.javalin.plugin.openapi.annotations.OpenApi
+import io.javalin.plugin.openapi.annotations.OpenApiContent
+import io.javalin.plugin.openapi.annotations.OpenApiResponse
 import net.nachtbeere.minecraft.purifier.*
+import org.eclipse.jetty.websocket.api.StatusCode
 
 object PurifierUsersController : PurifierControllerBase() {
+    @OpenApi(
+        responses = [
+            OpenApiResponse(status = "200", content = [OpenApiContent(CurrentUsersModel::class)]),
+            OpenApiResponse(status = "500", content = [OpenApiContent(CommonResponseModel::class)])
+        ]
+    )
     fun currentUsers(ctx: Context)  {
         this.log("Current User List Request Accepted.")
         val payload = futureTask {
@@ -31,6 +41,12 @@ object PurifierUsersController : PurifierControllerBase() {
                     total=currentUsers.size,
                     users=users
             )
+        }
+        if (payload != null) {
+            ctx.json(payload)
+        } else {
+            ctx.status(StatusCode.SERVER_ERROR)
+            ctx.json(CommonResponseModel(result = "FAILED"))
         }
     }
 }

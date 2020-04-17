@@ -1,12 +1,9 @@
 package net.nachtbeere.minecraft.purifier.controllers
 
-import net.nachtbeere.minecraft.purifier.CommonResponseModel
 import net.nachtbeere.minecraft.purifier.Constants
-import net.nachtbeere.minecraft.purifier.Purifier
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.plugin.Plugin
-import java.util.logging.Level
 
 open class PurifierControllerBase() {
     var bukkitServer: Server = bukkitServer()

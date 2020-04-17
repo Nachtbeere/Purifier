@@ -1,8 +1,6 @@
 package net.nachtbeere.minecraft.purifier
 
-import com.google.gson.Gson
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder
 import io.javalin.core.JavalinConfig
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.OpenApiOptions
@@ -35,9 +33,7 @@ class PurifierServer(private val port: Int, val pluginInstance: Purifier)  {
 
     init {
         Thread.currentThread().contextClassLoader = Purifier::class.java.classLoader
-
         app.before { ctx -> log.info(ctx.req.pathInfo) }
-
         app.get("/") { ctx: Context -> ctx.result("Purifier Bukkit API") }
     }
 
