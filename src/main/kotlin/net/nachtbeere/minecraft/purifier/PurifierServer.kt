@@ -42,7 +42,7 @@ class PurifierServer(private val port: Int, val pluginInstance: Purifier)  {
                 name="AGPLv3"
                 url="https://raw.githubusercontent.com/Nachtbeere/Purifier/master/LICENSE"
             })
-        return OpenApiOptions(applicationInfo).path("/swagger.json")
+        return OpenApiOptions(applicationInfo).path("/api-docs")
     }
 
     init {
