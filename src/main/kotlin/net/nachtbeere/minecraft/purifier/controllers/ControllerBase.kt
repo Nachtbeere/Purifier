@@ -1,24 +1,39 @@
 package net.nachtbeere.minecraft.purifier.controllers
 
 import net.nachtbeere.minecraft.purifier.CommonResponseModel
+import net.nachtbeere.minecraft.purifier.Constants
 import net.nachtbeere.minecraft.purifier.Purifier
-import net.nachtbeere.minecraft.purifier.jsonMaker
+import org.bukkit.Bukkit
+import org.bukkit.Server
+import org.bukkit.plugin.Plugin
+import java.util.logging.Level
 
-open class PurifierControllerBase(private val instance: Purifier) {
+open class PurifierControllerBase() {
+    var bukkitServer: Server = bukkitServer()
+    var currentPlugin: Plugin = currentPlugin()
+
+    private fun bukkitServer(): Server {
+        return Bukkit.getServer() as Server
+    }
+
+    private fun currentPlugin(): Plugin {
+        return bukkitServer.pluginManager.getPlugin(Constants.packageName) as Plugin
+    }
+
     fun log(msg: String) {
-        instance.logger.info(msg)
+        bukkitServer.logger.info(msg)
     }
 
     fun warnLog(msg: String) {
-        instance.logger.warning(msg)
+        bukkitServer.logger.warning(msg)
     }
 
     fun severeLog(msg: String) {
-        instance.logger.severe(msg)
+        bukkitServer.logger.severe(msg)
     }
 
     fun futureTask(task: () -> Any): Any? {
-        val future = this.instance.server.scheduler.callSyncMethod(instance) { task() }
+        val future = this.bukkitServer.scheduler.callSyncMethod(this.currentPlugin) { task() }
         return try {
             future.get()
         } catch (e: Throwable) {
@@ -28,16 +43,7 @@ open class PurifierControllerBase(private val instance: Purifier) {
     }
 
     fun futureTaskLater(task: () -> Any) {
-        this.instance.server.scheduler.runTaskLater(instance, Runnable { task() }, 60)
-    }
-
-    fun commonResponse(): String {
-        val payload = this.futureTask {
-            CommonResponseModel(
-                    result = "SUCCESS"
-            )
-        }
-        return jsonMaker(payload)
+        this.bukkitServer.scheduler.runTaskLater(this.currentPlugin, Runnable { task() }, 60)
     }
 }
 

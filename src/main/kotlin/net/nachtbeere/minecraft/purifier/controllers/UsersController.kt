@@ -1,12 +1,13 @@
 package net.nachtbeere.minecraft.purifier.controllers
 
+import io.javalin.http.Context
 import net.nachtbeere.minecraft.purifier.*
 
-class PurifierUsersController(private val instance: Purifier) : PurifierControllerBase(instance) {
-    fun currentUsers(): String {
+object PurifierUsersController : PurifierControllerBase() {
+    fun currentUsers(ctx: Context)  {
         this.log("Current User List Request Accepted.")
         val payload = futureTask {
-            val currentUsers = instance.server.onlinePlayers
+            val currentUsers = bukkitServer.onlinePlayers
             val users = arrayListOf<UserModel>()
             currentUsers.iterator().forEach { p ->
                 users.add(
@@ -31,6 +32,5 @@ class PurifierUsersController(private val instance: Purifier) : PurifierControll
                     users=users
             )
         }
-        return jsonMaker(payload)
     }
 }
