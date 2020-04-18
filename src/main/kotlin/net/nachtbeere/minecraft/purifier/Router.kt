@@ -10,6 +10,7 @@ fun routingTable(app: Javalin) {
             ApiBuilder.path(Constants.apiVersion) {
                 ApiBuilder.get("/health", PurifierServersController::health)
                 ApiBuilder.get("/info", PurifierServersController::info)
+                ApiBuilder.get("/system-info", PurifierServersController::systemInfo)
                 ApiBuilder.path("servers") {
                     ApiBuilder.put("/save", PurifierServersController::save)
                     ApiBuilder.put("/reload", PurifierServersController::reload)
