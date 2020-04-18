@@ -1,10 +1,10 @@
 package net.nachtbeere.minecraft.purifier.controllers
 
+import net.nachtbeere.minecraft.purifier.models.*
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.OpenApi
 import io.javalin.plugin.openapi.annotations.OpenApiContent
 import io.javalin.plugin.openapi.annotations.OpenApiResponse
-import net.nachtbeere.minecraft.purifier.*
 import org.eclipse.jetty.http.HttpStatus
 
 object PurifierUsersController : PurifierControllerBase() {
