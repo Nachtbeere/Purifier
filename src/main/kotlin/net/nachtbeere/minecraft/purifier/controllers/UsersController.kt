@@ -8,6 +8,11 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 import org.eclipse.jetty.http.HttpStatus
 
 object PurifierUsersController : PurifierControllerBase() {
+    /*
+    TODO: /tp function
+    TODO: /gamemode function
+    TODO: /give function
+    */
     @OpenApi(
         responses = [
             OpenApiResponse(status = HttpStatus.OK_200.toString(), content = [OpenApiContent(UsersModel::class)]),
