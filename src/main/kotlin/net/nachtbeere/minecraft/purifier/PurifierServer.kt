@@ -14,7 +14,6 @@ import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.info.License
 
 class PurifierServer(private val port: Int, val pluginInstance: Purifier)  {
-    // TODO: load from config file
     private var gson: Gson = GsonBuilder().serializeNulls().create()
     private var app: Javalin = Javalin.create { config: JavalinConfig ->
         config.defaultContentType = "application/json"

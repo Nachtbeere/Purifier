@@ -1,16 +1,22 @@
 package net.nachtbeere.minecraft.purifier
 
+import java.io.File
 import org.bukkit.plugin.java.JavaPlugin
 
 class Purifier : JavaPlugin() {
-    private val purifierServer = PurifierServer(port = 8080,
-                                                pluginInstance = this)
+    private var purifierServer: PurifierServer? = null
+
+    override fun onLoad() {
+        if (!(File(this.dataFolder, "config.yml")).exists()) this.saveDefaultConfig()
+        purifierServer = PurifierServer(port = this.config.getInt("port"),
+                                        pluginInstance = this)
+    }
 
     override fun onEnable() {
-        this.purifierServer.start()
+        this.purifierServer!!.start()
     }
 
     override fun onDisable() {
-        this.purifierServer.stop()
+        this.purifierServer!!.stop()
     }
 }
