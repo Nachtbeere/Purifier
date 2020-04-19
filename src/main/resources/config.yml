@@ -1,2 +1,3 @@
+debug: false
 port: 8080
 broadcast_prefix: "SERVER"

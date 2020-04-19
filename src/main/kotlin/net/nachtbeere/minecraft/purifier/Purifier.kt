@@ -9,6 +9,7 @@ class Purifier : JavaPlugin() {
     override fun onLoad() {
         if (!(File(this.dataFolder, "config.yml")).exists()) this.saveDefaultConfig()
         purifierServer = PurifierServer(port = this.config.getInt("port"),
+                                        isDebug = this.config.getBoolean("debug"),
                                         pluginInstance = this)
     }
 

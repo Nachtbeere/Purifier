@@ -13,10 +13,11 @@ import io.javalin.plugin.openapi.OpenApiPlugin
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.info.License
 
-class PurifierServer(private val port: Int, val pluginInstance: Purifier)  {
+class PurifierServer(private val port: Int, isDebug: Boolean, val pluginInstance: Purifier)  {
     /* TODO: Add JWT or something to authorize request
         fixed token in config.yml(for access from another server)
         one-time token show in initialize phase.
+       TODO: Make separated API access log
      */
     private var gson: Gson = GsonBuilder().serializeNulls().create()
     private var app: Javalin = Javalin.create { config: JavalinConfig ->
@@ -50,7 +51,9 @@ class PurifierServer(private val port: Int, val pluginInstance: Purifier)  {
 
     init {
         Thread.currentThread().contextClassLoader = Purifier::class.java.classLoader
-        app.before { ctx -> log.info(ctx.req.pathInfo) }
+        if (isDebug) {
+            app.before { ctx -> log.info(ctx.req.pathInfo) }
+        }
         app.get("/") { ctx: Context -> ctx.result("Purifier Bukkit API") }
     }
 
