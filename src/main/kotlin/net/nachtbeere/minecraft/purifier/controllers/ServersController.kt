@@ -7,6 +7,8 @@ import io.javalin.plugin.openapi.annotations.OpenApiContent
 import io.javalin.plugin.openapi.annotations.OpenApiResponse
 import org.eclipse.jetty.http.HttpStatus
 import com.sun.management.OperatingSystemMXBean
+import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
+import org.bukkit.ChatColor
 import java.lang.management.ManagementFactory
 import java.text.DecimalFormat
 import java.time.*
@@ -15,16 +17,21 @@ import java.time.format.DateTimeFormatter
 
 object PurifierServersController : PurifierControllerBase() {
     @OpenApi(
-        responses = [OpenApiResponse(status = "200", content = [OpenApiContent(CommonResponseModel::class)])]
+        responses = [
+            OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                            content = [OpenApiContent(CommonResponseModel::class)])
+        ]
     )
     fun health(ctx: Context) {
-        ctx.json(CommonResponseModel(result = "success"))
+        ctx.json(this.successResponse())
     }
 
     @OpenApi(
         responses = [
-            OpenApiResponse(status = "200", content = [OpenApiContent(ServerInfoModel::class)]),
-            OpenApiResponse(status = "500", content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                            content = [OpenApiContent(ServerInfoModel::class)]),
+            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                            content = [OpenApiContent(CommonResponseModel::class)])
         ]
     )
     fun info(ctx: Context) {
@@ -50,6 +57,14 @@ object PurifierServersController : PurifierControllerBase() {
         }
     }
 
+    @OpenApi(
+            responses = [
+                OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(ServerSystemInfoModel::class)]),
+                OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)])
+            ]
+    )
     fun systemInfo(ctx: Context) {
         val payload =  this.futureTask {
             val runtimeBean = ManagementFactory.getRuntimeMXBean()
@@ -95,9 +110,35 @@ object PurifierServersController : PurifierControllerBase() {
     }
 
     @OpenApi(
+            requestBody = OpenApiRequestBody([OpenApiContent(SetBroadcastModel::class)]),
+            responses = [
+                OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                                content = [OpenApiContent(CommonResponseModel::class)]),
+                OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                                content = [OpenApiContent(CommonResponseModel::class)])
+            ]
+    )
+    fun broadcast(ctx: Context) {
+        val req = ctx.bodyAsClass(SetBroadcastModel::class.java)
+        val payload = this.futureTask {
+            bukkitServer.broadcastMessage("${ChatColor.GRAY}${ChatColor.ITALIC}" +
+                    "[${this.currentPlugin.config.getString("broadcast_prefix")}] " +
+                    "${ChatColor.RESET}" + req.message)
+        }
+        if (payload != null) {
+            ctx.json(this.successResponse())
+        } else {
+            ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
+            ctx.json(this.failedResponse())
+        }
+    }
+
+    @OpenApi(
         responses = [
-            OpenApiResponse(status = "200", content = [OpenApiContent(CommonResponseModel::class)]),
-            OpenApiResponse(status = "500", content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                            content = [OpenApiContent(CommonResponseModel::class)]),
+            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                            content = [OpenApiContent(CommonResponseModel::class)])
         ]
     )
     fun save(ctx: Context) {
@@ -107,35 +148,34 @@ object PurifierServersController : PurifierControllerBase() {
                 w.save()
                 this.log("Save Complete.")
             }
-            CommonResponseModel(result = "SUCCESS")
         }
         if (payload != null) {
-            ctx.json(payload)
+            ctx.json(this.successResponse())
         } else {
             ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
-            ctx.json(CommonResponseModel(result = "FAILED"))
+            ctx.json(this.failedResponse())
         }
     }
 
     @OpenApi(
         responses = [
-            OpenApiResponse(status = "200", content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                            content = [OpenApiContent(CommonResponseModel::class)])
         ]
     )
     fun reload(ctx: Context) {
         this.futureTaskLater(3) { bukkitServer.reload() }
-        val payload = CommonResponseModel(result = "SUCCESS")
-        ctx.json(payload)
+        ctx.json(this.successResponse())
     }
 
     @OpenApi(
         responses = [
-            OpenApiResponse(status = "200", content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                            content = [OpenApiContent(CommonResponseModel::class)])
         ]
     )
     fun shutdown(ctx: Context) {
         bukkitServer.shutdown()
-        val payload = CommonResponseModel(result = "SUCCESS")
-        ctx.json(payload)
+        ctx.json(this.successResponse())
     }
 }

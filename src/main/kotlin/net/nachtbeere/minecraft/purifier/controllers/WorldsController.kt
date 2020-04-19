@@ -21,6 +21,14 @@ fun getWorld(worlds: List<World>, targetName: String): World? {
 }
 
 object PurifierWorldsController : PurifierControllerBase() {
+    @OpenApi(
+            responses = [
+                OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(GameWorldsModel::class)]),
+                OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)])
+            ]
+    )
     fun currentTime(ctx: Context)  {
         val payload = this.futureTask {
             val worlds = arrayListOf<CurrentTimeModel>()
@@ -41,6 +49,7 @@ object PurifierWorldsController : PurifierControllerBase() {
             ctx.json(payload)
         } else {
             ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
+            ctx.json(this.failedResponse())
         }
     }
 
@@ -59,7 +68,6 @@ object PurifierWorldsController : PurifierControllerBase() {
     fun setTime(ctx: Context) {
         val paramWorld = ctx.pathParam(":world")
         val req = ctx.bodyAsClass(SetTimeModel::class.java)
-        var result = "SUCCESS"
         val statusCode = this.futureTask {
             val targetWorld: World? = getWorld(bukkitServer.worlds, paramWorld)
             if (targetWorld != null) {
@@ -70,18 +78,20 @@ object PurifierWorldsController : PurifierControllerBase() {
                     "night" -> targetWorld.time = Constants.time.night
                     "midnight" -> targetWorld.time = Constants.time.midnight
                     else -> {
-                        result = "FAILED"
                         status = HttpStatus.BAD_REQUEST_400
                     }
                 }
                 status
             } else {
-                result = "FAILED"
                 HttpStatus.NOT_FOUND_404
             }
         }
         ctx.status(statusCode as Int)
-        ctx.json(CommonResponseModel(result = result))
+        if (statusCode != HttpStatus.OK_200) {
+            ctx.json(failedResponse())
+        } else {
+            ctx.json(successResponse())
+        }
     }
 
     @OpenApi(
@@ -98,25 +108,26 @@ object PurifierWorldsController : PurifierControllerBase() {
     )
     fun setManualTime(ctx: Context) {
         val paramWorld = ctx.pathParam(":world")
-        var result = "SUCCESS"
         val req = ctx.bodyAsClass(SetManualTimeModel::class.java)
         val statusCode = this.futureTask {
             val targetWorld: World? = getWorld(bukkitServer.worlds, paramWorld)
             if (targetWorld != null) {
                 if (req.time < 0.toLong() || req.time > 24000.toLong()) {
-                    result = "FAILED"
                     HttpStatus.BAD_REQUEST_400
                 } else {
                     targetWorld.time = req.time
                     HttpStatus.OK_200
                 }
             } else {
-                result = "FAILED"
                 HttpStatus.NOT_FOUND_404
             }
         }
         ctx.status(statusCode as Int)
-        ctx.json(CommonResponseModel(result = result))
+        if (statusCode != HttpStatus.OK_200) {
+            ctx.json(failedResponse())
+        } else {
+            ctx.json(successResponse())
+        }
     }
 
     @OpenApi(
@@ -141,10 +152,10 @@ object PurifierWorldsController : PurifierControllerBase() {
             }
         }
         ctx.status(statusCode as Int)
-        var result = "SUCCESS"
         if (statusCode != HttpStatus.OK_200) {
-            result = "FAILED"
+            ctx.json(failedResponse())
+        } else {
+            ctx.json(successResponse())
         }
-        ctx.json(CommonResponseModel(result = result))
     }
 }

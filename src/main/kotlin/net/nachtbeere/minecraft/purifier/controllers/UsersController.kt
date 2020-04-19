@@ -8,6 +8,11 @@ import io.javalin.plugin.openapi.annotations.OpenApiResponse
 import org.eclipse.jetty.http.HttpStatus
 
 object PurifierUsersController : PurifierControllerBase() {
+    /*
+    TODO: /tp function
+    TODO: /gamemode function
+    TODO: /give function
+    */
     @OpenApi(
         responses = [
             OpenApiResponse(status = HttpStatus.OK_200.toString(), content = [OpenApiContent(UsersModel::class)]),
@@ -45,7 +50,7 @@ object PurifierUsersController : PurifierControllerBase() {
             ctx.json(payload)
         } else {
             ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
-            ctx.json(CommonResponseModel(result = "FAILED"))
+            ctx.json(this.failedResponse())
         }
     }
 
@@ -86,7 +91,7 @@ object PurifierUsersController : PurifierControllerBase() {
             ctx.json(payload)
         } else {
             ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
-            ctx.json(CommonResponseModel(result = "FAILED"))
+            ctx.json(this.failedResponse())
         }
     }
 }
