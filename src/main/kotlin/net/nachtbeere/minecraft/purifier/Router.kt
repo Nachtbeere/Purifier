@@ -12,6 +12,7 @@ fun routingTable(app: Javalin) {
                 ApiBuilder.get("/info", PurifierServersController::info)
                 ApiBuilder.get("/system-info", PurifierServersController::systemInfo)
                 ApiBuilder.path("servers") {
+                    ApiBuilder.post("/broadcast", PurifierServersController::broadcast)
                     ApiBuilder.put("/save", PurifierServersController::save)
                     ApiBuilder.put("/reload", PurifierServersController::reload)
                     ApiBuilder.put("/shutdown", PurifierServersController::shutdown)
@@ -27,6 +28,7 @@ fun routingTable(app: Javalin) {
                     ApiBuilder.put("/:world/storm", PurifierWorldsController::toggleStorm)
                 }
                 ApiBuilder.path("users") {
+                    ApiBuilder.get(PurifierUsersController::onlineUsers) // Default as online. maybe remove later.
                     ApiBuilder.get("/online", PurifierUsersController::onlineUsers)
                     ApiBuilder.get("/offline", PurifierUsersController::offlineUsers)
                 }

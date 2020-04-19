@@ -50,7 +50,7 @@ object PurifierUsersController : PurifierControllerBase() {
             ctx.json(payload)
         } else {
             ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
-            ctx.json(CommonResponseModel(result = "FAILED"))
+            ctx.json(this.failedResponse())
         }
     }
 
@@ -91,7 +91,7 @@ object PurifierUsersController : PurifierControllerBase() {
             ctx.json(payload)
         } else {
             ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
-            ctx.json(CommonResponseModel(result = "FAILED"))
+            ctx.json(this.failedResponse())
         }
     }
 }

@@ -1,6 +1,7 @@
 package net.nachtbeere.minecraft.purifier.controllers
 
 import net.nachtbeere.minecraft.purifier.Constants
+import net.nachtbeere.minecraft.purifier.models.CommonResponseModel
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.plugin.Plugin
@@ -41,6 +42,14 @@ open class PurifierControllerBase() {
 
     fun futureTaskLater(seconds: Long, task: () -> Any) {
         this.bukkitServer.scheduler.runTaskLater(this.currentPlugin, Runnable { task() }, (20 * seconds))
+    }
+
+    fun successResponse(): CommonResponseModel {
+        return CommonResponseModel(result="SUCCESS")
+    }
+
+    fun failedResponse(): CommonResponseModel {
+        return CommonResponseModel(result="FAILED")
     }
 }
 
