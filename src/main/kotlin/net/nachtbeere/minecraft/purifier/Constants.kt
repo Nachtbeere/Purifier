@@ -14,5 +14,7 @@ class TimeConstants() {
         const val noon = 6000.toLong()
         const val night = 13000.toLong()
         const val midnight = 18000.toLong()
+        const val min = 0.toLong()
+        const val max = 24000.toLong()
     }
 }
