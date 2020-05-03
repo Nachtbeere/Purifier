@@ -34,7 +34,7 @@ class Cors(private val log: Logger, private val config: MemorySection) {
 
 
 class Auth(private val log: Logger, private val config: MemorySection) {
-    private val skipAuthPath = listOf("/", "/auth")
+    private val skipAuthPath = listOf("/", "/auth", "/api-docs")
     private val algorithm: Algorithm = Algorithm.HMAC256(config.getString("key"))
     private val issuer: String = config.getString("issuer")!!
     private val verifier: JWTVerifier = JWT.require(this.algorithm).withIssuer(this.issuer).build()
