@@ -12,6 +12,7 @@ class LocationModel(val world: String,
 
 class UserModel(val username: String,
                 val locale: String,
+                val gamemode: String,
                 val level: Int,
                 val exp: Float,
                 val hunger: Int,

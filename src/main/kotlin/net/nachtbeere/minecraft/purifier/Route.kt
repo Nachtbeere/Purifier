@@ -32,6 +32,7 @@ fun route(app: Javalin) {
                     ApiBuilder.get(PurifierUsersController::onlineUsers, roles(Permission.READ)) // Default as online. maybe remove later.
                     ApiBuilder.get("/online", PurifierUsersController::onlineUsers, roles(Permission.READ))
                     ApiBuilder.get("/offline", PurifierUsersController::offlineUsers, roles(Permission.READ))
+                    ApiBuilder.put("/:username/gamemode", PurifierUsersController::setUserGameMode, roles(Permission.WRITE))
                 }
             }
         }

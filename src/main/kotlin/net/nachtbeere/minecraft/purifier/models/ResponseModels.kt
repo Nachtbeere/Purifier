@@ -49,6 +49,8 @@ class UsersModel(val total: Int,
     }
 }
 
+class SingleUserModel(val user: UserModel): BaseResponseModel()
+
 class CurrentTimeModel(val worldName: String,
                        val currentTime: GameTimeModel): BaseResponseModel() {
     override fun toString(): String {

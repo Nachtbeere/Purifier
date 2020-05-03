@@ -7,3 +7,5 @@ class SetTimeModel(val moment: String)
 class SetManualTimeModel(val time: Long)
 
 class SetBroadcastModel(val message: String)
+
+class SetUserGameModeModel(val gamemode: Int)
