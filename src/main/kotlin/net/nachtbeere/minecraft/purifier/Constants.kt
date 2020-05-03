@@ -21,6 +21,17 @@ class TimeConstants() {
     }
 }
 
+enum class PurifierGameMode(val value: Int) {
+    SURVIVAL(0),
+    CREATIVE(1),
+    ADVENTURE(2),
+    SPECTATOR(3);
+
+    companion object {
+        fun valueOf(value: Int) = values().find { it.value == value } ?: SURVIVAL
+    }
+}
+
 enum class Permission: Role {
     ADMIN,
     WRITE,
