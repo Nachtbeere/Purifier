@@ -10,25 +10,15 @@ open class PurifierControllerBase() {
     var bukkitServer: Server = bukkitServer()
     var currentPlugin: Plugin = currentPlugin()
 
-    private fun bukkitServer(): Server {
-        return Bukkit.getServer()
-    }
+    private fun bukkitServer(): Server = Bukkit.getServer()
 
-    private fun currentPlugin(): Plugin {
-        return bukkitServer.pluginManager.getPlugin(Constants.packageName) as Plugin
-    }
+    private fun currentPlugin(): Plugin = bukkitServer.pluginManager.getPlugin(Constants.packageName) as Plugin
 
-    fun log(msg: String) {
-        bukkitServer.logger.info(msg)
-    }
+    fun log(msg: String) = bukkitServer.logger.info(msg)
 
-    fun warnLog(msg: String) {
-        bukkitServer.logger.warning(msg)
-    }
+    fun warnLog(msg: String) = bukkitServer.logger.warning(msg)
 
-    fun severeLog(msg: String) {
-        bukkitServer.logger.severe(msg)
-    }
+    fun severeLog(msg: String) = bukkitServer.logger.severe(msg)
 
     fun futureTask(task: () -> Any): Any? {
         val future = this.bukkitServer.scheduler.callSyncMethod(this.currentPlugin) { task() }
@@ -45,11 +35,11 @@ open class PurifierControllerBase() {
     }
 
     fun successResponse(): CommonResponseModel {
-        return CommonResponseModel(result="SUCCESS")
+        return CommonResponseModel(result = "SUCCESS")
     }
 
     fun failedResponse(): CommonResponseModel {
-        return CommonResponseModel(result="FAILED")
+        return CommonResponseModel(result = "FAILED")
     }
 }
 

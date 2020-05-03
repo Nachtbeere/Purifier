@@ -22,25 +22,29 @@ fun getWorld(worlds: List<World>, targetName: String): World? {
 
 object PurifierWorldController : PurifierControllerBase() {
     @OpenApi(
-            responses = [
-                OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                        content = [OpenApiContent(GameWorldsModel::class)]),
-                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-                OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)])
-            ]
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(GameWorldsModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
     )
-    fun currentTime(ctx: Context)  {
+    fun currentTime(ctx: Context) {
         val payload = this.futureTask {
             val worlds = arrayListOf<CurrentTimeModel>()
             bukkitServer.worlds.iterator().forEach { w ->
                 worlds.add(
-                        CurrentTimeModel(
-                            worldName = w.name,
-                            currentTime = GameTimeModel(
-                                    time = w.time,
-                                    age = w.fullTime
+                    CurrentTimeModel(
+                        worldName = w.name,
+                        currentTime = GameTimeModel(
+                            time = w.time,
+                            age = w.fullTime
                         )
                     )
                 )
@@ -57,16 +61,19 @@ object PurifierWorldController : PurifierControllerBase() {
 
     @OpenApi(
         requestBody = OpenApiRequestBody(
-            content = [OpenApiContent(SetTimeModel::class)]),
+            content = [OpenApiContent(SetTimeModel::class)]
+        ),
         responses = [
             OpenApiResponse(
                 status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            ),
             OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
             OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
             OpenApiResponse(
                 status = HttpStatus.NOT_FOUND_404.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)])
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
         ]
     )
     fun setTime(ctx: Context) {
@@ -100,16 +107,19 @@ object PurifierWorldController : PurifierControllerBase() {
 
     @OpenApi(
         requestBody = OpenApiRequestBody(
-            content = [OpenApiContent(SetManualTimeModel::class)]),
+            content = [OpenApiContent(SetManualTimeModel::class)]
+        ),
         responses = [
             OpenApiResponse(
                 status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            ),
             OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
             OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
             OpenApiResponse(
                 status = HttpStatus.NOT_FOUND_404.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)])
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
         ]
     )
     fun setManualTime(ctx: Context) {
@@ -140,12 +150,14 @@ object PurifierWorldController : PurifierControllerBase() {
         responses = [
             OpenApiResponse(
                 status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            ),
             OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
             OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
             OpenApiResponse(
                 status = HttpStatus.NOT_FOUND_404.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)])
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
         ]
     )
     fun toggleStorm(ctx: Context) {
@@ -171,12 +183,14 @@ object PurifierWorldController : PurifierControllerBase() {
         responses = [
             OpenApiResponse(
                 status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(GameWorldsModel::class)]),
+                content = [OpenApiContent(GameWorldsModel::class)]
+            ),
             OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
             OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
             OpenApiResponse(
                 status = HttpStatus.NOT_FOUND_404.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)])
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
         ]
     )
     fun worlds(ctx: Context) {

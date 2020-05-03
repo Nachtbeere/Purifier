@@ -33,7 +33,6 @@ class Cors(private val log: Logger, private val config: MemorySection) {
 }
 
 
-
 class Auth(private val log: Logger, private val config: MemorySection) {
     private val skipAuthPath = listOf("/", "/auth", "/api-docs")
     private val algorithm: Algorithm = Algorithm.HMAC256(config.getString("key"))
@@ -61,9 +60,9 @@ class Auth(private val log: Logger, private val config: MemorySection) {
                 .withIssuer(this.issuer)
                 .withClaim("username", username)
                 .sign(this.algorithm)
-            TokenResponseModel(token=token)
+            TokenResponseModel(token = token)
         } catch (exception: JWTCreationException) {
-            TokenResponseModel(token=null)
+            TokenResponseModel(token = null)
         }
     }
 
@@ -89,10 +88,12 @@ class Auth(private val log: Logger, private val config: MemorySection) {
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody(content=[OpenApiContent(AuthorizeUserModel::class)]),
+        requestBody = OpenApiRequestBody(content = [OpenApiContent(AuthorizeUserModel::class)]),
         responses = [
-            OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(TokenResponseModel::class)]),
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(TokenResponseModel::class)]
+            ),
             OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString())
         ]
     )

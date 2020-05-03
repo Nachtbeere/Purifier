@@ -54,15 +54,19 @@ object PurifierUserController : PurifierControllerBase() {
 
     @OpenApi(
         responses = [
-            OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                            content = [OpenApiContent(UsersModel::class)]),
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(UsersModel::class)]
+            ),
             OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
             OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                            content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
         ]
     )
-    fun onlineUsers(ctx: Context)  {
+    fun onlineUsers(ctx: Context) {
         val payload = futureTask {
             val currentUsers = bukkitServer.onlinePlayers
             val users = arrayListOf<UserModel>()
@@ -72,8 +76,8 @@ object PurifierUserController : PurifierControllerBase() {
                 )
             }
             UsersModel(
-                    total=currentUsers.size,
-                    users=users
+                total = currentUsers.size,
+                users = users
             )
         }
         if (payload != null) {
@@ -86,12 +90,16 @@ object PurifierUserController : PurifierControllerBase() {
 
     @OpenApi(
         responses = [
-            OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                            content = [OpenApiContent(UsersModel::class)]),
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(UsersModel::class)]
+            ),
             OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
             OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                            content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
         ]
     )
     fun offlineUsers(ctx: Context) {
@@ -104,8 +112,8 @@ object PurifierUserController : PurifierControllerBase() {
                 )
             }
             UsersModel(
-                total=currentUsers.size,
-                users=users
+                total = currentUsers.size,
+                users = users
             )
         }
         if (payload != null) {
@@ -118,14 +126,19 @@ object PurifierUserController : PurifierControllerBase() {
 
     @OpenApi(
         requestBody = OpenApiRequestBody(
-            content = [OpenApiContent(SetUserGameModeModel::class)]),
+            content = [OpenApiContent(SetUserGameModeModel::class)]
+        ),
         responses = [
-            OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(SingleUserModel::class)]),
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(SingleUserModel::class)]
+            ),
             OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
             OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
         ]
     )
     fun setUserGameMode(ctx: Context) {
@@ -136,7 +149,7 @@ object PurifierUserController : PurifierControllerBase() {
             if (currentUser != null) {
                 currentUser.gameMode = GameMode.valueOf(PurifierGameMode.valueOf(req.gamemode).toString())
             }
-            SingleUserModel(user=user(currentUser))
+            SingleUserModel(user = user(currentUser))
         }
         if (payload != null) {
             if (payload is SingleUserModel && payload.user.username == paramUser) {
