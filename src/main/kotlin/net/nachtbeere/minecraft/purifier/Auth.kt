@@ -88,10 +88,11 @@ class Auth(private val log: Logger, private val config: MemorySection) {
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody([OpenApiContent(AuthorizeUserModel::class)]),
+        requestBody = OpenApiRequestBody(content=[OpenApiContent(AuthorizeUserModel::class)]),
         responses = [
             OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(TokenResponseModel::class)])
+                content = [OpenApiContent(TokenResponseModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString())
         ]
     )
     fun authorize(ctx: Context) {

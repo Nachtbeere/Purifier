@@ -25,6 +25,8 @@ object PurifierWorldsController : PurifierControllerBase() {
             responses = [
                 OpenApiResponse(status = HttpStatus.OK_200.toString(),
                         content = [OpenApiContent(GameWorldsModel::class)]),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
                 OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
                         content = [OpenApiContent(CommonResponseModel::class)])
             ]
@@ -60,6 +62,8 @@ object PurifierWorldsController : PurifierControllerBase() {
             OpenApiResponse(
                 status = HttpStatus.OK_200.toString(),
                 content = [OpenApiContent(CommonResponseModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
             OpenApiResponse(
                 status = HttpStatus.NOT_FOUND_404.toString(),
                 content = [OpenApiContent(CommonResponseModel::class)])
@@ -101,6 +105,8 @@ object PurifierWorldsController : PurifierControllerBase() {
             OpenApiResponse(
                 status = HttpStatus.OK_200.toString(),
                 content = [OpenApiContent(CommonResponseModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
             OpenApiResponse(
                 status = HttpStatus.NOT_FOUND_404.toString(),
                 content = [OpenApiContent(CommonResponseModel::class)])
@@ -135,6 +141,8 @@ object PurifierWorldsController : PurifierControllerBase() {
             OpenApiResponse(
                 status = HttpStatus.OK_200.toString(),
                 content = [OpenApiContent(CommonResponseModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
             OpenApiResponse(
                 status = HttpStatus.NOT_FOUND_404.toString(),
                 content = [OpenApiContent(CommonResponseModel::class)])
