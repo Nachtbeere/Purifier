@@ -63,9 +63,6 @@ class PurifierServer(private val port: Int,
         if (cors.enabled()) {
             app.before { ctx -> cors.verify(ctx) }
         }
-//        if (auth.enabled()) {
-//            app.before { ctx -> auth.verify(ctx) }
-//        }
         app.get("/") { ctx: Context -> ctx.result("Purifier - Modded Minecraft Server API") }
         app.post("/auth") { ctx: Context -> auth.authorize(ctx) }
     }

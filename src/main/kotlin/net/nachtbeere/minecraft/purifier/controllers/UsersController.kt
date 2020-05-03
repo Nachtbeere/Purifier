@@ -102,4 +102,18 @@ object PurifierUsersController : PurifierControllerBase() {
             ctx.json(this.failedResponse())
         }
     }
+
+    @OpenApi(
+        responses = [
+            OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(UsersModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)])
+        ]
+    )
+    fun setUserGamemode(ctx: Context) {
+
+    }
 }
