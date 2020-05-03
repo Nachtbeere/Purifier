@@ -19,10 +19,7 @@ class PurifierServer(private val port: Int,
                      val auth: Auth,
                      val cors: Cors,
                      val pluginInstance: Purifier)  {
-    /* TODO: Add JWT or something to authorize request
-        fixed token in config.yml(for access from another server)
-        one-time token show in initialize phase.
-       TODO: Make separated API access log
+    /* TODO: Make separated API access log
      */
     private var gson: Gson = GsonBuilder().serializeNulls().create()
     private var app: Javalin = Javalin.create { config: JavalinConfig ->
@@ -50,7 +47,7 @@ class PurifierServer(private val port: Int,
         val applicationInfo: Info = Info()
             .title("Purifier")
             .version("1.0")
-            .description("Purifier Bukkit API")
+            .description("Purifier Modded Minecraft Server API")
             .license(License().apply {
                 name="AGPLv3"
                 url="https://raw.githubusercontent.com/Nachtbeere/Purifier/master/LICENSE"
