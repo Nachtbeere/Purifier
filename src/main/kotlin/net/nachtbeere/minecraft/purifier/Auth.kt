@@ -1,5 +1,6 @@
 package net.nachtbeere.minecraft.purifier
 
+import net.nachtbeere.minecraft.purifier.models.AuthUser
 import net.nachtbeere.minecraft.purifier.models.AuthorizeUserModel
 import net.nachtbeere.minecraft.purifier.models.TokenResponseModel
 import com.auth0.jwt.JWT
