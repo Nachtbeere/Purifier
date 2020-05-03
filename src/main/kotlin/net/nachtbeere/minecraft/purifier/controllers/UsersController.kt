@@ -14,7 +14,6 @@ import org.eclipse.jetty.http.HttpStatus
 object PurifierUsersController : PurifierControllerBase() {
     /*
     TODO: /tp function
-    TODO: /gamemode function
     TODO: /give function
     */
     fun user(player: Player?): UserModel {
@@ -140,7 +139,12 @@ object PurifierUsersController : PurifierControllerBase() {
             SingleUserModel(user=user(currentUser))
         }
         if (payload != null) {
-            ctx.json(payload)
+            if (payload is SingleUserModel && payload.user.username == paramUser) {
+                ctx.json(payload)
+            } else {
+                ctx.status(HttpStatus.NOT_FOUND_404)
+                ctx.json(this.failedResponse())
+            }
         } else {
             ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
             ctx.json(this.failedResponse())
