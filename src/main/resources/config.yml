@@ -1,3 +1,25 @@
 debug: false
 port: 8080
 broadcast_prefix: "SERVER"
+cors:
+  enabled: false
+  hosts:
+    - "*"
+authentication:
+  enabled: false
+  key: "secret"
+  issuer: "purifier"
+  users:
+    - admin:
+        password: "admin"
+        roles:
+          - "ADMIN"
+    - user:
+        password: "user"
+        roles:
+          - "READ"
+          - "WRITE"
+    - readonly:
+        password: "readonly"
+        roles:
+          - "READ"

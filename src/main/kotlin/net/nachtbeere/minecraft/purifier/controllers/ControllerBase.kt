@@ -53,4 +53,14 @@ open class PurifierControllerBase() {
     }
 }
 
+fun getUserFromCache() {
 
+}
+
+fun getUserFromMojang() {
+
+}
+
+fun getUser() {
+
+}
