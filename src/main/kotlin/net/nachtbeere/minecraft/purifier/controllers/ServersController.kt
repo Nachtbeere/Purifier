@@ -30,6 +30,8 @@ object PurifierServersController : PurifierControllerBase() {
         responses = [
             OpenApiResponse(status = HttpStatus.OK_200.toString(),
                             content = [OpenApiContent(ServerInfoModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
             OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
                             content = [OpenApiContent(CommonResponseModel::class)])
         ]
@@ -61,6 +63,8 @@ object PurifierServersController : PurifierControllerBase() {
             responses = [
                 OpenApiResponse(status = HttpStatus.OK_200.toString(),
                         content = [OpenApiContent(ServerSystemInfoModel::class)]),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
                 OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
                         content = [OpenApiContent(CommonResponseModel::class)])
             ]
@@ -114,6 +118,8 @@ object PurifierServersController : PurifierControllerBase() {
             responses = [
                 OpenApiResponse(status = HttpStatus.OK_200.toString(),
                                 content = [OpenApiContent(CommonResponseModel::class)]),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
                 OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
                                 content = [OpenApiContent(CommonResponseModel::class)])
             ]
@@ -137,6 +143,8 @@ object PurifierServersController : PurifierControllerBase() {
         responses = [
             OpenApiResponse(status = HttpStatus.OK_200.toString(),
                             content = [OpenApiContent(CommonResponseModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
             OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
                             content = [OpenApiContent(CommonResponseModel::class)])
         ]
@@ -160,7 +168,9 @@ object PurifierServersController : PurifierControllerBase() {
     @OpenApi(
         responses = [
             OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                            content = [OpenApiContent(CommonResponseModel::class)])
+                            content = [OpenApiContent(CommonResponseModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString())
         ]
     )
     fun reload(ctx: Context) {
@@ -171,7 +181,9 @@ object PurifierServersController : PurifierControllerBase() {
     @OpenApi(
         responses = [
             OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                            content = [OpenApiContent(CommonResponseModel::class)])
+                            content = [OpenApiContent(CommonResponseModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString())
         ]
     )
     fun shutdown(ctx: Context) {

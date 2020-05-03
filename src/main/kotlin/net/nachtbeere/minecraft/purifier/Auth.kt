@@ -1,5 +1,7 @@
 package net.nachtbeere.minecraft.purifier
 
+import net.nachtbeere.minecraft.purifier.models.AuthorizeUserModel
+import net.nachtbeere.minecraft.purifier.models.TokenResponseModel
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
@@ -12,10 +14,6 @@ import io.javalin.http.ForbiddenResponse
 import io.javalin.http.Handler
 import io.javalin.http.UnauthorizedResponse
 import io.javalin.plugin.openapi.annotations.*
-import net.nachtbeere.minecraft.purifier.models.AuthorizeUserModel
-import net.nachtbeere.minecraft.purifier.models.CommonResponseModel
-import net.nachtbeere.minecraft.purifier.models.SetBroadcastModel
-import net.nachtbeere.minecraft.purifier.models.TokenResponseModel
 import org.bukkit.configuration.MemorySection
 import org.eclipse.jetty.http.HttpStatus
 import java.util.logging.Logger
@@ -52,15 +50,8 @@ class Auth(private val log: Logger, private val config: MemorySection) {
         }
     }
 
-    fun enabled(): Boolean {
-        return this.enabled
-    }
-
     private fun user(username: String): AuthUser? {
         return users[username]
-    }
-
-    private fun unauthorized() {
     }
 
     private fun generate(username: String): TokenResponseModel {
@@ -71,7 +62,6 @@ class Auth(private val log: Logger, private val config: MemorySection) {
                 .sign(this.algorithm)
             TokenResponseModel(token=token)
         } catch (exception: JWTCreationException) {
-            //Invalid Signing configuration / Couldn't convert Claims.
             TokenResponseModel(token=null)
         }
     }
@@ -98,10 +88,11 @@ class Auth(private val log: Logger, private val config: MemorySection) {
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody([OpenApiContent(AuthorizeUserModel::class)]),
+        requestBody = OpenApiRequestBody(content=[OpenApiContent(AuthorizeUserModel::class)]),
         responses = [
             OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)])
+                content = [OpenApiContent(TokenResponseModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString())
         ]
     )
     fun authorize(ctx: Context) {
@@ -116,11 +107,7 @@ class Auth(private val log: Logger, private val config: MemorySection) {
 
     @OpenApi(
         headers = [
-            OpenApiParam("Authorization", String::class, "Authorization: {token}")
-        ],
-        responses = [
-            OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiParam("Authorization", String::class, "Authorization: Bearer {token}")
         ]
     )
     fun verify(handler: Handler, ctx: Context, permittedRoles: Set<Role>) {
