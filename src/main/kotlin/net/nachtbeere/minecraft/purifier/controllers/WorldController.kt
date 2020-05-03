@@ -20,7 +20,7 @@ fun getWorld(worlds: List<World>, targetName: String): World? {
     return target
 }
 
-object PurifierWorldsController : PurifierControllerBase() {
+object PurifierWorldController : PurifierControllerBase() {
     @OpenApi(
             responses = [
                 OpenApiResponse(status = HttpStatus.OK_200.toString(),
@@ -157,6 +157,31 @@ object PurifierWorldsController : PurifierControllerBase() {
                 HttpStatus.OK_200
             } else {
                 HttpStatus.NOT_FOUND_404
+            }
+        }
+        ctx.status(statusCode as Int)
+        if (statusCode != HttpStatus.OK_200) {
+            ctx.json(failedResponse())
+        } else {
+            ctx.json(successResponse())
+        }
+    }
+
+    @OpenApi(
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(GameWorldsModel::class)]),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.NOT_FOUND_404.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)])
+        ]
+    )
+    fun worlds(ctx: Context) {
+        val statusCode = this.futureTask {
+            bukkitServer.worlds.iterator().forEach { w ->
             }
         }
         ctx.status(statusCode as Int)

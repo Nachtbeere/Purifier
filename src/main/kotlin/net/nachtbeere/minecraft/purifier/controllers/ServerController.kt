@@ -15,7 +15,7 @@ import java.time.*
 import java.time.format.DateTimeFormatter
 
 
-object PurifierServersController : PurifierControllerBase() {
+object PurifierServerController : PurifierControllerBase() {
     @OpenApi(
         responses = [
             OpenApiResponse(status = HttpStatus.OK_200.toString(),

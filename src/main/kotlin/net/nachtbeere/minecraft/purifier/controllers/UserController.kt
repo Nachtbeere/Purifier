@@ -11,7 +11,7 @@ import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.eclipse.jetty.http.HttpStatus
 
-object PurifierUsersController : PurifierControllerBase() {
+object PurifierUserController : PurifierControllerBase() {
     /*
     TODO: /tp function
     TODO: /give function
