@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.nachtbeere.minecraft.purifier"
-version = "0.4-SNAPSHOT"
+version = "0.5-SNAPSHOT"
 
 repositories {
     mavenLocal()
@@ -17,6 +17,8 @@ repositories {
         }
     }
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
+    maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/public/") }
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -28,6 +30,8 @@ dependencies {
     implementation("cc.vileda:kotlin-openapi3-dsl:0.20.2")
     implementation("org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT")
     implementation("org.bukkit:bukkit:1.15.2-R0.1-SNAPSHOT")
+    implementation("com.auth0:java-jwt:3.10.3")
+    testImplementation("com.github.seeseemelk:MockBukkit:v1.15-SNAPSHOT")
 }
 
 tasks {

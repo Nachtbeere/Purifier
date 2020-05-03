@@ -112,7 +112,7 @@ object PurifierWorldsController : PurifierControllerBase() {
         val statusCode = this.futureTask {
             val targetWorld: World? = getWorld(bukkitServer.worlds, paramWorld)
             if (targetWorld != null) {
-                if (req.time < 0.toLong() || req.time > 24000.toLong()) {
+                if (req.time < Constants.time.min || req.time > Constants.time.max) {
                     HttpStatus.BAD_REQUEST_400
                 } else {
                     targetWorld.time = req.time

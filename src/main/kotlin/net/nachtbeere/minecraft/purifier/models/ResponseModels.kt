@@ -13,6 +13,12 @@ class CommonResponseModel(val result: String): BaseResponseModel() {
     }
 }
 
+class TokenResponseModel(val token: String?): BaseResponseModel() {
+    override fun toString(): String {
+        return ""
+    }
+}
+
 class ServerInfoModel(
     val version: String,
     val basedOn: String,

@@ -15,8 +15,10 @@ object PurifierUsersController : PurifierControllerBase() {
     */
     @OpenApi(
         responses = [
-            OpenApiResponse(status = HttpStatus.OK_200.toString(), content = [OpenApiContent(UsersModel::class)]),
-            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(), content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                            content = [OpenApiContent(UsersModel::class)]),
+            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                            content = [OpenApiContent(CommonResponseModel::class)])
         ]
     )
     fun onlineUsers(ctx: Context)  {
@@ -56,8 +58,10 @@ object PurifierUsersController : PurifierControllerBase() {
 
     @OpenApi(
         responses = [
-            OpenApiResponse(status = HttpStatus.OK_200.toString(), content = [OpenApiContent(UsersModel::class)]),
-            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(), content = [OpenApiContent(CommonResponseModel::class)])
+            OpenApiResponse(status = HttpStatus.OK_200.toString(),
+                            content = [OpenApiContent(UsersModel::class)]),
+            OpenApiResponse(status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                            content = [OpenApiContent(CommonResponseModel::class)])
         ]
     )
     fun offlineUsers(ctx: Context) {
