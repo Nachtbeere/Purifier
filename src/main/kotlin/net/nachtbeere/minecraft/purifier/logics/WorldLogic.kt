@@ -10,10 +10,9 @@ import org.eclipse.jetty.http.HttpStatus
 typealias HttpStatusCode = Int
 
 class PurifierWorldLogic : PurifierLogicBase() {
-
-    fun getWorld(worlds: List<World>, targetName: String): World? {
+    private fun world(targetName: String): World? {
         var target: World? = null
-        worlds.iterator().forEach { w ->
+        minecraftServer.worlds.iterator().forEach { w ->
             if (w.name == targetName) {
                 target = w
             }
@@ -42,7 +41,7 @@ class PurifierWorldLogic : PurifierLogicBase() {
     fun setTime(worldName: String, moment: String): HttpStatusCode? {
         return this.futureTask {
             var status = HttpStatus.OK_200
-            val targetWorld: World? = getWorld(minecraftServer.worlds, worldName)
+            val targetWorld: World? = world(worldName)
             if (targetWorld != null) {
                 when (moment) {
                     "day" -> targetWorld.time = Constants.time.day
@@ -62,7 +61,7 @@ class PurifierWorldLogic : PurifierLogicBase() {
 
     fun setManualTime(worldName: String, time: Long): HttpStatusCode? {
         return this.futureTask {
-            val targetWorld: World? = getWorld(minecraftServer.worlds, worldName)
+            val targetWorld: World? = world(worldName)
             if (targetWorld != null) {
                 if (time < Constants.time.min || time > Constants.time.max) {
                     HttpStatus.BAD_REQUEST_400
@@ -78,7 +77,7 @@ class PurifierWorldLogic : PurifierLogicBase() {
 
     fun toggleStorm(worldName: String): HttpStatusCode? {
         return this.futureTask {
-            val targetWorld: World? = getWorld(minecraftServer.worlds, worldName)
+            val targetWorld: World? = world(worldName)
             if (targetWorld != null) {
                 targetWorld.setStorm(!targetWorld.hasStorm())
                 HttpStatus.OK_200
