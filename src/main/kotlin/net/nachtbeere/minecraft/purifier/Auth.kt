@@ -1,5 +1,6 @@
 package net.nachtbeere.minecraft.purifier
 
+import net.nachtbeere.minecraft.purifier.models.AuthUser
 import net.nachtbeere.minecraft.purifier.models.AuthorizeUserModel
 import net.nachtbeere.minecraft.purifier.models.TokenResponseModel
 import com.auth0.jwt.JWT
@@ -32,7 +33,6 @@ class Cors(private val log: Logger, private val config: MemorySection) {
 }
 
 
-
 class Auth(private val log: Logger, private val config: MemorySection) {
     private val skipAuthPath = listOf("/", "/auth", "/api-docs")
     private val algorithm: Algorithm = Algorithm.HMAC256(config.getString("key"))
@@ -57,12 +57,12 @@ class Auth(private val log: Logger, private val config: MemorySection) {
     private fun generate(username: String): TokenResponseModel {
         return try {
             val token = JWT.create()
-                .withIssuer(this.issuer)
-                .withClaim("username", username)
-                .sign(this.algorithm)
-            TokenResponseModel(token=token)
+                    .withIssuer(this.issuer)
+                    .withClaim("username", username)
+                    .sign(this.algorithm)
+            TokenResponseModel(token = token)
         } catch (exception: JWTCreationException) {
-            TokenResponseModel(token=null)
+            TokenResponseModel(token = null)
         }
     }
 
@@ -88,12 +88,14 @@ class Auth(private val log: Logger, private val config: MemorySection) {
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody(content=[OpenApiContent(AuthorizeUserModel::class)]),
-        responses = [
-            OpenApiResponse(status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(TokenResponseModel::class)]),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString())
-        ]
+            requestBody = OpenApiRequestBody(content = [OpenApiContent(AuthorizeUserModel::class)]),
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(TokenResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString())
+            ]
     )
     fun authorize(ctx: Context) {
         val requestUser = ctx.bodyAsClass(AuthorizeUserModel::class.java)
@@ -106,9 +108,9 @@ class Auth(private val log: Logger, private val config: MemorySection) {
     }
 
     @OpenApi(
-        headers = [
-            OpenApiParam("Authorization", String::class, "Authorization: Bearer {token}")
-        ]
+            headers = [
+                OpenApiParam("Authorization", String::class, "Authorization: Bearer {token}")
+            ]
     )
     fun verify(handler: Handler, ctx: Context, permittedRoles: Set<Role>) {
         if (!enabled || permittedRoles.contains(Permission.ANON) || skipAuthPath.contains(ctx.path())) {

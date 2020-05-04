@@ -14,11 +14,13 @@ import io.javalin.plugin.openapi.OpenApiPlugin
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.info.License
 
-class PurifierServer(private val port: Int,
-                     private val isDebug: Boolean,
-                     val auth: Auth,
-                     val cors: Cors,
-                     val pluginInstance: Purifier)  {
+class PurifierServer(
+        private val port: Int,
+        private val isDebug: Boolean,
+        val auth: Auth,
+        val cors: Cors,
+        val pluginInstance: Purifier
+) {
     /* TODO: Make separated API access log
      */
     private var gson: Gson = GsonBuilder().serializeNulls().create()
@@ -45,13 +47,13 @@ class PurifierServer(private val port: Int,
 
     private fun getOpenApiOptions(): OpenApiOptions {
         val applicationInfo: Info = Info()
-            .title("Purifier")
-            .version("1.0")
-            .description("Purifier Modded Minecraft Server API")
-            .license(License().apply {
-                name="AGPLv3"
-                url="https://raw.githubusercontent.com/Nachtbeere/Purifier/master/LICENSE"
-            })
+                .title("Purifier")
+                .version("1.0")
+                .description("Purifier Modded Minecraft Server API")
+                .license(License().apply {
+                    name = "AGPLv3"
+                    url = "https://raw.githubusercontent.com/Nachtbeere/Purifier/master/LICENSE"
+                })
         return OpenApiOptions(applicationInfo).path("/api-docs")
     }
 
