@@ -1,10 +1,7 @@
 package net.nachtbeere.minecraft.purifier.logics
 
 import net.nachtbeere.minecraft.purifier.PurifierGameMode
-import net.nachtbeere.minecraft.purifier.models.LocationModel
-import net.nachtbeere.minecraft.purifier.models.SingleUserModel
-import net.nachtbeere.minecraft.purifier.models.UserModel
-import net.nachtbeere.minecraft.purifier.models.UsersModel
+import net.nachtbeere.minecraft.purifier.models.*
 import org.bukkit.GameMode
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -53,57 +50,86 @@ class PurifierUserLogic : PurifierLogicBase() {
         return when (player) {
             is Player -> {
                 UserModel(
-                        username = player.displayName,
-                        locale = player.locale,
-                        gamemode = player.gameMode.name,
-                        level = player.level,
-                        exp = player.exp,
-                        hunger = player.foodLevel,
-                        vital = player.health,
-                        location = LocationModel(
-                                world = player.location.world!!.name,
-                                x = player.location.x,
-                                y = player.location.y,
-                                z = player.location.z
-                        ),
-                        online = player.isOnline
+                    username = player.displayName,
+                    locale = player.locale,
+                    gamemode = player.gameMode.name,
+                    level = player.level,
+                    exp = player.exp,
+                    hunger = player.foodLevel,
+                    vital = player.health,
+                    location = LocationModel(
+                        world = player.location.world!!.name,
+                        x = player.location.x,
+                        y = player.location.y,
+                        z = player.location.z
+                    ),
+                    online = player.isOnline
                 )
             }
             is OfflinePlayer -> {
-                log(player.name ?: "null")
                 UserModel(
-                        username = player.name ?: "",
-                        locale = "",
-                        gamemode = "",
-                        level = 0,
-                        exp = 0.toFloat(),
-                        hunger = 0,
-                        vital = 0.toDouble(),
-                        location = LocationModel(
-                                world = "",
-                                x = 0.toDouble(),
-                                y = 0.toDouble(),
-                                z = 0.toDouble()
-                        ),
-                        online = player.isOnline
+                    username = player.name ?: "",
+                    locale = "",
+                    gamemode = "",
+                    level = 0,
+                    exp = 0.toFloat(),
+                    hunger = 0,
+                    vital = 0.toDouble(),
+                    location = LocationModel(
+                        world = "",
+                        x = 0.toDouble(),
+                        y = 0.toDouble(),
+                        z = 0.toDouble()
+                    ),
+                    online = player.isOnline
                 )
             }
             else -> {
                 UserModel(
-                        username = "",
-                        locale = "",
-                        gamemode = "",
-                        level = 0,
-                        exp = 0.toFloat(),
-                        hunger = 0,
-                        vital = 0.toDouble(),
-                        location = LocationModel(
-                                world = "",
-                                x = 0.toDouble(),
-                                y = 0.toDouble(),
-                                z = 0.toDouble()
-                        ),
-                        online = false
+                    username = "",
+                    locale = "",
+                    gamemode = "",
+                    level = 0,
+                    exp = 0.toFloat(),
+                    hunger = 0,
+                    vital = 0.toDouble(),
+                    location = LocationModel(
+                        world = "",
+                        x = 0.toDouble(),
+                        y = 0.toDouble(),
+                        z = 0.toDouble()
+                    ),
+                    online = false
+                )
+            }
+        }
+    }
+
+    private fun mojangUserWrapper(player: Any?): MojangUserModel {
+        return when (player) {
+            is Player -> {
+                MojangUserModel(
+                    id = player.uniqueId.toString().replace("-", ""),
+                    name = player.displayName
+                )
+            }
+            is OfflinePlayer -> {
+                if (player.hasPlayedBefore()) {
+                    MojangUserModel(
+                        id = player.uniqueId.toString().replace("-", ""),
+                        name = player.name ?: ""
+                    )
+                } else {
+                    MojangUserModel(
+                        id = "",
+                        name = ""
+                    )
+                }
+            }
+            else -> {
+                MojangUserModel(
+                    id = "",
+                    name = ""
                 )
             }
         }
@@ -121,12 +147,12 @@ class PurifierUserLogic : PurifierLogicBase() {
             val users = arrayListOf<UserModel>()
             currentUsers.iterator().forEach { p ->
                 users.add(
-                        userWrapper(p)
+                    userWrapper(p)
                 )
             }
             UsersModel(
-                    total = currentUsers.size,
-                    users = users
+                total = currentUsers.size,
+                users = users
             )
         } as UsersModel?
     }
@@ -138,12 +164,12 @@ class PurifierUserLogic : PurifierLogicBase() {
             currentUsers.iterator().forEach { p ->
                 minecraftServer
                 users.add(
-                        userWrapper(p)
+                    userWrapper(p)
                 )
             }
             UsersModel(
-                    total = currentUsers.size,
-                    users = users
+                total = currentUsers.size,
+                users = users
             )
         } as UsersModel?
     }
@@ -156,5 +182,12 @@ class PurifierUserLogic : PurifierLogicBase() {
             }
             userWrapper(currentUser)
         } as UserModel
+    }
+
+    fun mojang_user(username: String): MojangUserModel {
+        return futureTask {
+            val currentUser = fetchOfflineUser(username)
+            mojangUserWrapper(currentUser)
+        } as MojangUserModel
     }
 }

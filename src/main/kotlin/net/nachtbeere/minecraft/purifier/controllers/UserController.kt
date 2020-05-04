@@ -9,6 +9,7 @@ import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
 import io.javalin.plugin.openapi.annotations.OpenApiResponse
 import io.javalin.plugin.openapi.annotations.OpenApiParam
 import org.eclipse.jetty.http.HttpStatus
+import java.util.*
 
 object PurifierUserController : PurifierControllerBase() {
     /*
@@ -105,6 +106,37 @@ object PurifierUserController : PurifierControllerBase() {
         } else {
             ctx.status(HttpStatus.NOT_FOUND_404)
             ctx.json(this.failedResponse())
+        }
+    }
+
+    @OpenApi(
+        pathParams = [
+            OpenApiParam(
+                name = "username"
+            )
+        ],
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(SingleUserModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
+    )
+    fun mojang_user(ctx: Context) {
+        val paramUser = ctx.pathParam(":username")
+        val payload = userLogic.mojang_user(paramUser)
+        if (payload.name.toLowerCase() == paramUser.toLowerCase() &&
+            payload.id != UUID(0L, 0L).toString()
+        ) {
+            ctx.json(payload)
+        } else {
+            ctx.status(HttpStatus.NO_CONTENT_204)
         }
     }
 }

@@ -1,4 +1,4 @@
-version: "0.8.2-SNAPSHOT"
+version: "0.9-SNAPSHOT"
 api-version: "1.15"
 name: "purifier"
 main: "net.nachtbeere.minecraft.purifier.Purifier"
