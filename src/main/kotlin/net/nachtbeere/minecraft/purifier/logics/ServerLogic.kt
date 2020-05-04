@@ -59,7 +59,7 @@ class PurifierServerLogic : PurifierLogicBase() {
     }
 
     fun systemInfo(): ServerSystemInfoModel? {
-        val result: ServerSystemInfoModel? = this.futureTask {
+        return futureTask {
             val runtimeBean = ManagementFactory.getRuntimeMXBean()
             val osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
             val currentRuntime = Runtime.getRuntime()
@@ -82,6 +82,5 @@ class PurifierServerLogic : PurifierLogicBase() {
                     memoryLoads = "${((allocatedHeapMemory.toDouble() / maxHeapMemory) * 100)}%"
             )
         } as ServerSystemInfoModel?
-        return result
     }
 }
