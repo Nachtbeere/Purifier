@@ -35,6 +35,9 @@ fun route(app: Javalin) {
                     ApiBuilder.put("/:username/gamemode", PurifierUserController::setUserGameMode, roles(Permission.WRITE))
                     ApiBuilder.get("/:uuid", PurifierUserController::user, roles(Permission.READ))
                 }
+                ApiBuilder.path("mojang-users") {
+                    ApiBuilder.get("/:username", PurifierUserController::mojang_user, roles(Permission.READ))
+                }
             }
         }
     }

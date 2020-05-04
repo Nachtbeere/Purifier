@@ -18,7 +18,7 @@ class PurifierUserCache() {
 
 
     fun isCached(username: String): Boolean {
-        return users[username] != null
+        return users[username.toLowerCase()] != null
     }
 
     fun removeUserFromCache(username: String) {
@@ -56,7 +56,7 @@ class PurifierUserCache() {
                 if (users[it["name"]] == null) {
                     users[it["name"]?.toLowerCase() ?: error("")] = CachedUser(
                             name = it["name"] ?: error(""),
-                            uuid = UUID.fromString(it["uuid"]) ?: error(UUID.randomUUID()),
+                            uuid = UUID.fromString(it["uuid"]) ?: error(UUID(0L, 0L)),
                             expiresOn = parseDateTime(it["expiresOn"])
                     )
                 }
@@ -69,7 +69,7 @@ class PurifierUserCache() {
     }
 
     fun user(username: String): CachedUser? {
-        val currentUser: CachedUser? = users[username]
+        val currentUser: CachedUser? = users[username.toLowerCase()]
         return if (currentUser != null && isExpired(currentUser.expiresOn)) {
             removeUserFromCache(username)
             updateCache()
