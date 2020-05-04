@@ -19,8 +19,8 @@ fun route(app: Javalin) {
                     ApiBuilder.put("/shutdown", PurifierServerController::shutdown, roles(Permission.ADMIN))
 //                ApiBuilder.post("/whitelist/:username", PurifierServerController::addWhitelist)
 //                ApiBuilder.delete("/whitelist/:username", PurifierServerController::removeWhitelist)
-//                ApiBuilder.post("/op/:username", PurifierServerController::addOpList)
-//                ApiBuilder.delete("/op/:username", PurifierServerController::removeOpList)
+//                ApiBuilder.post("/op/:username", PurifierServerController::addOp)
+//                ApiBuilder.delete("/op/:username", PurifierServerController::removeOp)
                 }
                 ApiBuilder.path("worlds") {
 //                    ApiBuilder.get(PurifierWorldsController::worlds, roles(Permission.READ))
@@ -30,10 +30,10 @@ fun route(app: Javalin) {
                     ApiBuilder.put("/:world/storm", PurifierWorldController::toggleStorm, roles(Permission.WRITE))
                 }
                 ApiBuilder.path("users") {
-                    ApiBuilder.get(PurifierUserController::onlineUsers, roles(Permission.READ)) // Default as online. maybe remove later.
-                    ApiBuilder.get("/online", PurifierUserController::onlineUsers, roles(Permission.READ))
-                    ApiBuilder.get("/offline", PurifierUserController::offlineUsers, roles(Permission.READ))
+                    ApiBuilder.get(PurifierUserController::users, roles(Permission.READ))
+                    ApiBuilder.get("/:username", PurifierUserController::user, roles(Permission.READ))
                     ApiBuilder.put("/:username/gamemode", PurifierUserController::setUserGameMode, roles(Permission.WRITE))
+                    ApiBuilder.get("/:uuid", PurifierUserController::user, roles(Permission.READ))
                 }
             }
         }

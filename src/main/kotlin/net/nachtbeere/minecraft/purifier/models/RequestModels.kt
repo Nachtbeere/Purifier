@@ -9,3 +9,5 @@ class SetManualTimeModel(val time: Long)
 class SetBroadcastModel(val message: String)
 
 class SetUserGameModeModel(val gamemode: Int)
+
+class RequestUserModel(val username: String)

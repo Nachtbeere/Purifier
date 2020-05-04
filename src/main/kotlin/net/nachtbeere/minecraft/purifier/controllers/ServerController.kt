@@ -1,60 +1,45 @@
 package net.nachtbeere.minecraft.purifier.controllers
 
 import net.nachtbeere.minecraft.purifier.models.*
+import net.nachtbeere.minecraft.purifier.logics.PurifierServerLogic
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.OpenApi
 import io.javalin.plugin.openapi.annotations.OpenApiContent
 import io.javalin.plugin.openapi.annotations.OpenApiResponse
-import org.eclipse.jetty.http.HttpStatus
-import com.sun.management.OperatingSystemMXBean
 import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
-import org.bukkit.ChatColor
-import java.lang.management.ManagementFactory
-import java.text.DecimalFormat
-import java.time.*
-import java.time.format.DateTimeFormatter
-
+import org.eclipse.jetty.http.HttpStatus
 
 object PurifierServerController : PurifierControllerBase() {
-    @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
-    )
-    fun health(ctx: Context) = ctx.json(this.successResponse())
+    private val serverLogic = PurifierServerLogic()
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(ServerInfoModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
+    )
+    fun health(ctx: Context) {
+        ctx.json(this.successResponse())
+    }
+
+    @OpenApi(
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(ServerInfoModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun info(ctx: Context) {
-        // TODO: Add Current TPS for all API(bukkit/spigot/paper)
-        val payload = this.futureTask {
-            ServerInfoModel(
-                version = bukkitServer.version,
-                basedOn = bukkitServer.name,
-                motd = bukkitServer.motd,
-                tps = null,
-                gameMode = bukkitServer.defaultGameMode.name,
-                currentPlayers = bukkitServer.onlinePlayers.size,
-                maxPlayers = bukkitServer.maxPlayers,
-                isOnlineMode = bukkitServer.onlineMode,
-                isHardcore = bukkitServer.isHardcore
-            )
-        }
+        val payload = serverLogic.serverInfo()
         if (payload != null) {
             ctx.json(payload)
         } else {
@@ -64,43 +49,21 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(ServerSystemInfoModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(ServerSystemInfoModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun systemInfo(ctx: Context) {
-        val payload = this.futureTask {
-            val runtimeBean = ManagementFactory.getRuntimeMXBean()
-            val osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
-            val currentRuntime = Runtime.getRuntime()
-            val startTime = OffsetDateTime.ofInstant(
-                Instant.ofEpochMilli(runtimeBean.startTime),
-                ZoneId.systemDefault()
-            )
-            val currentTime = OffsetDateTime.ofInstant(
-                Instant.ofEpochMilli(runtimeBean.startTime + runtimeBean.uptime),
-                ZoneId.systemDefault()
-            )
-            val timeDuration = Duration.between(startTime, currentTime)
-            val systemLoadAverage = osBean.systemLoadAverage
-            val maxHeapMemory = (currentRuntime.maxMemory() / (1024 * 1024))
-            val allocatedHeapMemory = (currentRuntime.totalMemory() / (1024 * 1024))
-            ServerSystemInfoModel(
-                startsAt = startTime.format(DateTimeFormatter.ISO_DATE_TIME),
-                uptime = OffsetDateTime.MIN.plus(timeDuration).format(DateTimeFormatter.ISO_LOCAL_TIME),
-                processorLoads = "${DecimalFormat("#.#").format(systemLoadAverage)}%",
-                memoryLoads = "${((allocatedHeapMemory.toDouble() / maxHeapMemory) * 100)}%"
-            )
-        }
+        val payload = serverLogic.systemInfo()
         if (payload != null) {
             ctx.json(payload)
         } else {
@@ -110,48 +73,70 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     fun addWhitelist(ctx: Context) {
-        if (bukkitServer.hasWhitelist()) {
-            // TODO
-        }
+
     }
 
     fun removeWhitelist(ctx: Context) {
-        if (bukkitServer.hasWhitelist()) {
-            // TODO
-        }
-    }
-
-    fun addOpList(ctx: Context) {
-    }
-
-    fun removeOpList(ctx: Context) {
 
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody([OpenApiContent(SetBroadcastModel::class)]),
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            requestBody = OpenApiRequestBody([OpenApiContent(RequestUserModel::class)]),
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
+    )
+    fun addOp(ctx: Context) {
+        val req = ctx.bodyAsClass(RequestUserModel::class.java)
+        // 대충 유저네임에서 유저 오브젝트 만드는 코드
+    }
+
+    @OpenApi(
+            requestBody = OpenApiRequestBody([OpenApiContent(RequestUserModel::class)]),
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
+    )
+    fun removeOp(ctx: Context) {
+        val req = ctx.bodyAsClass(RequestUserModel::class.java)
+    }
+
+    @OpenApi(
+            requestBody = OpenApiRequestBody([OpenApiContent(SetBroadcastModel::class)]),
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun broadcast(ctx: Context) {
         val req = ctx.bodyAsClass(SetBroadcastModel::class.java)
-        val payload = this.futureTask {
-            bukkitServer.broadcastMessage(
-                "${ChatColor.GRAY}${ChatColor.ITALIC}" +
-                        "[${this.currentPlugin.config.getString("broadcast_prefix")}] " +
-                        "${ChatColor.RESET}" + req.message
-            )
-        }
+        val payload = serverLogic.broadcast(req.message)
         if (payload != null) {
             ctx.json(this.successResponse())
         } else {
@@ -161,27 +146,21 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun save(ctx: Context) {
-        val payload = this.futureTask {
-            bukkitServer.worlds.iterator().forEach { w ->
-                this.log("Sending Save Request of ".plus(w.name))
-                w.save()
-                this.log("Save Complete.")
-            }
-        }
+        val payload = serverLogic.save()
         if (payload != null) {
             ctx.json(this.successResponse())
         } else {
@@ -191,32 +170,32 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString())
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString())
+            ]
     )
     fun reload(ctx: Context) {
-        this.futureTaskLater(3) { bukkitServer.reload() }
+        serverLogic.reload()
         ctx.json(this.successResponse())
     }
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString())
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString())
+            ]
     )
     fun shutdown(ctx: Context) {
-        bukkitServer.shutdown()
+        serverLogic.shutdown()
         ctx.json(this.successResponse())
     }
 }

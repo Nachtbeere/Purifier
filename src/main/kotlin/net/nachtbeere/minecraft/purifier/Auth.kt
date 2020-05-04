@@ -57,9 +57,9 @@ class Auth(private val log: Logger, private val config: MemorySection) {
     private fun generate(username: String): TokenResponseModel {
         return try {
             val token = JWT.create()
-                .withIssuer(this.issuer)
-                .withClaim("username", username)
-                .sign(this.algorithm)
+                    .withIssuer(this.issuer)
+                    .withClaim("username", username)
+                    .sign(this.algorithm)
             TokenResponseModel(token = token)
         } catch (exception: JWTCreationException) {
             TokenResponseModel(token = null)
@@ -88,14 +88,14 @@ class Auth(private val log: Logger, private val config: MemorySection) {
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody(content = [OpenApiContent(AuthorizeUserModel::class)]),
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(TokenResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString())
-        ]
+            requestBody = OpenApiRequestBody(content = [OpenApiContent(AuthorizeUserModel::class)]),
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(TokenResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString())
+            ]
     )
     fun authorize(ctx: Context) {
         val requestUser = ctx.bodyAsClass(AuthorizeUserModel::class.java)
@@ -108,9 +108,9 @@ class Auth(private val log: Logger, private val config: MemorySection) {
     }
 
     @OpenApi(
-        headers = [
-            OpenApiParam("Authorization", String::class, "Authorization: Bearer {token}")
-        ]
+            headers = [
+                OpenApiParam("Authorization", String::class, "Authorization: Bearer {token}")
+            ]
     )
     fun verify(handler: Handler, ctx: Context, permittedRoles: Set<Role>) {
         if (!enabled || permittedRoles.contains(Permission.ANON) || skipAuthPath.contains(ctx.path())) {
