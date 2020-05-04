@@ -32,7 +32,7 @@ enum class PurifierGameMode(val value: Int) {
     }
 }
 
-enum class Permission: Role {
+enum class Permission : Role {
     ADMIN,
     WRITE,
     READ,

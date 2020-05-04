@@ -17,10 +17,10 @@ fun route(app: Javalin) {
                     ApiBuilder.put("/save", PurifierServerController::save, roles(Permission.ADMIN))
                     ApiBuilder.put("/reload", PurifierServerController::reload, roles(Permission.ADMIN))
                     ApiBuilder.put("/shutdown", PurifierServerController::shutdown, roles(Permission.ADMIN))
-                    ApiBuilder.post("/whitelist", PurifierServerController::addWhitelist)
-                    ApiBuilder.delete("/whitelist", PurifierServerController::removeWhitelist)
-                    ApiBuilder.post("/op", PurifierServerController::addOp)
-                    ApiBuilder.delete("/op", PurifierServerController::removeOp)
+                    ApiBuilder.post("/whitelist", PurifierServerController::addWhitelist, roles(Permission.ADMIN))
+                    ApiBuilder.delete("/whitelist", PurifierServerController::removeWhitelist, roles(Permission.ADMIN))
+                    ApiBuilder.post("/op", PurifierServerController::addOp, roles(Permission.ADMIN))
+                    ApiBuilder.delete("/op", PurifierServerController::removeOp, roles(Permission.ADMIN))
                 }
                 ApiBuilder.path("worlds") {
 //                    ApiBuilder.get(PurifierWorldsController::worlds, roles(Permission.READ))
