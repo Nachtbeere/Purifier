@@ -34,12 +34,7 @@ object PurifierUserController : PurifierControllerBase() {
     fun user(ctx: Context) {
         val paramUser = ctx.pathParam(":username")
         val payload = userLogic.user(paramUser)
-        if (payload != null) {
-            ctx.json(payload)
-        } else {
-            ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
-            ctx.json(this.failedResponse())
-        }
+        ctx.json(SingleUserModel(user = payload))
     }
 
     @OpenApi(
@@ -79,6 +74,11 @@ object PurifierUserController : PurifierControllerBase() {
     }
 
     @OpenApi(
+            pathParams = [
+                OpenApiParam(
+                        name = "username"
+                )
+            ],
             requestBody = OpenApiRequestBody(
                     content = [OpenApiContent(SetUserGameModeModel::class)]
             ),

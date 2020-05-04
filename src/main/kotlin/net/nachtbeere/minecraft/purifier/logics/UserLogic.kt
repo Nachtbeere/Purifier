@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 import java.util.*
 
 class PurifierUserLogic : PurifierLogicBase() {
-    private fun fetchUser(username: String): Any {
+    fun fetchUser(username: String): Any {
         val offlinePlayer = fetchOfflineUser(username)
         return if (offlinePlayer.isOnline) {
             fetchOnlineUser(offlinePlayer.uniqueId)!!
@@ -109,13 +109,10 @@ class PurifierUserLogic : PurifierLogicBase() {
         }
     }
 
-    fun user(username: String): Any? {
+    fun user(username: String): UserModel {
         return futureTask {
-            val user = fetchUser(username)
-            SingleUserModel(
-                    user = userWrapper(user)
-            )
-        }
+            userWrapper(fetchUser(username))
+        } as UserModel
     }
 
     fun onlineUsers(): UsersModel? {
