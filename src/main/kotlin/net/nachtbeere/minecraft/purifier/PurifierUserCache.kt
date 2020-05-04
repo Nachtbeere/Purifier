@@ -30,11 +30,11 @@ class PurifierUserCache() {
             val offsetPrefix = if (parsed[2].contains("+")) "+" else "-"
             val zoneOffset = parsed[2].replace(offsetPrefix, "").chunked(2)
             parsed[0].plus("T")
-                    .plus(parsed[1])
-                    .plus(offsetPrefix)
-                    .plus(zoneOffset[0])
-                    .plus(":")
-                    .plus(zoneOffset[1])
+                .plus(parsed[1])
+                .plus(offsetPrefix)
+                .plus(zoneOffset[0])
+                .plus(":")
+                .plus(zoneOffset[1])
         } catch (e: Throwable) {
             OffsetDateTime.MAX.toString()
         }
@@ -50,13 +50,12 @@ class PurifierUserCache() {
             val rawUsers = gson.fromJson(cachePath.readText(), List::class.java) as RawCachedUsers
             rawUsers.forEach {
                 users[it["name"]?.toLowerCase() ?: error("")] = CachedUser(
-                        name = it["name"] ?: error(""),
-                        uuid = UUID.fromString(it["uuid"]) ?: error(UUID.randomUUID()),
-                        expiresOn = parseDateTime(it["expiresOn"])
+                    name = it["name"] ?: error(""),
+                    uuid = UUID.fromString(it["uuid"]) ?: error(UUID.randomUUID()),
+                    expiresOn = parseDateTime(it["expiresOn"])
                 )
             }
         }
-        println(users)
     }
 
     private fun isExpired(expiresOn: Instant): Boolean {
@@ -64,7 +63,6 @@ class PurifierUserCache() {
     }
 
     fun user(username: String): CachedUser? {
-        println(users)
         val currentUser: CachedUser? = users[username]
         return if (currentUser != null && isExpired(currentUser.expiresOn)) {
             updateCache()
