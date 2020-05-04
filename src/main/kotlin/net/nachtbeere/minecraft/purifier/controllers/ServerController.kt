@@ -95,6 +95,7 @@ object PurifierServerController : PurifierControllerBase() {
             var isAlreadyAdded = false
             when (user) {
                 is OfflinePlayer -> {
+                    println(user.isWhitelisted)
                     if (user.isWhitelisted) {
                         isAlreadyAdded = true
                     } else {
@@ -145,6 +146,7 @@ object PurifierServerController : PurifierControllerBase() {
             var isAlreadyRemoved = false
             when (user) {
                 is OfflinePlayer -> {
+                    println(user.isWhitelisted)
                     if (user.isWhitelisted) {
                         user.isWhitelisted = false
                     } else {
