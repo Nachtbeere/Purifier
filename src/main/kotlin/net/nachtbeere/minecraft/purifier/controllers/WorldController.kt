@@ -13,18 +13,18 @@ object PurifierWorldController : PurifierControllerBase() {
     private val worldLogic = PurifierWorldLogic()
 
     @OpenApi(
-            responses = [
-                OpenApiResponse(
-                        status = HttpStatus.OK_200.toString(),
-                        content = [OpenApiContent(GameWorldsModel::class)]
-                ),
-                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-                OpenApiResponse(
-                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                )
-            ]
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(GameWorldsModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
     )
     fun currentTime(ctx: Context) {
         val payload = worldLogic.currentTimes()
@@ -37,21 +37,21 @@ object PurifierWorldController : PurifierControllerBase() {
     }
 
     @OpenApi(
-            requestBody = OpenApiRequestBody(
-                    content = [OpenApiContent(SetTimeModel::class)]
+        requestBody = OpenApiRequestBody(
+            content = [OpenApiContent(SetTimeModel::class)]
+        ),
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
             ),
-            responses = [
-                OpenApiResponse(
-                        status = HttpStatus.OK_200.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                ),
-                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-                OpenApiResponse(
-                        status = HttpStatus.NOT_FOUND_404.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                )
-            ]
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.NOT_FOUND_404.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
     )
     fun setTime(ctx: Context) {
         val paramWorld = ctx.pathParam(":world")
@@ -66,21 +66,21 @@ object PurifierWorldController : PurifierControllerBase() {
     }
 
     @OpenApi(
-            requestBody = OpenApiRequestBody(
-                    content = [OpenApiContent(SetManualTimeModel::class)]
+        requestBody = OpenApiRequestBody(
+            content = [OpenApiContent(SetManualTimeModel::class)]
+        ),
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
             ),
-            responses = [
-                OpenApiResponse(
-                        status = HttpStatus.OK_200.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                ),
-                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-                OpenApiResponse(
-                        status = HttpStatus.NOT_FOUND_404.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                )
-            ]
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.NOT_FOUND_404.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
     )
     fun setManualTime(ctx: Context) {
         val paramWorld = ctx.pathParam(":world")
@@ -95,18 +95,18 @@ object PurifierWorldController : PurifierControllerBase() {
     }
 
     @OpenApi(
-            responses = [
-                OpenApiResponse(
-                        status = HttpStatus.OK_200.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                ),
-                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-                OpenApiResponse(
-                        status = HttpStatus.NOT_FOUND_404.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                )
-            ]
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.NOT_FOUND_404.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
     )
     fun toggleStorm(ctx: Context) {
         val paramWorld = ctx.pathParam(":world")
@@ -120,18 +120,18 @@ object PurifierWorldController : PurifierControllerBase() {
     }
 
     @OpenApi(
-            responses = [
-                OpenApiResponse(
-                        status = HttpStatus.OK_200.toString(),
-                        content = [OpenApiContent(GameWorldsModel::class)]
-                ),
-                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-                OpenApiResponse(
-                        status = HttpStatus.NOT_FOUND_404.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                )
-            ]
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(GameWorldsModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.NOT_FOUND_404.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
     )
     fun worlds(ctx: Context) {
         val statusCode = worldLogic.worlds()

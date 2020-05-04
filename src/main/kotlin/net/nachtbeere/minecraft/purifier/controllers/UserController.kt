@@ -18,18 +18,18 @@ object PurifierUserController : PurifierControllerBase() {
     private val userLogic = PurifierUserLogic()
 
     @OpenApi(
-            responses = [
-                OpenApiResponse(
-                        status = HttpStatus.OK_200.toString(),
-                        content = [OpenApiContent(UsersModel::class)]
-                ),
-                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-                OpenApiResponse(
-                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                )
-            ]
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(UsersModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
     )
     fun user(ctx: Context) {
         val paramUser = ctx.pathParam(":username")
@@ -38,25 +38,25 @@ object PurifierUserController : PurifierControllerBase() {
     }
 
     @OpenApi(
-            queryParams = [
-                OpenApiParam(
-                        name = "find",
-                        type = String::class,
-                        description = "find online/offline users. default value is online"
-                )
-            ],
-            responses = [
-                OpenApiResponse(
-                        status = HttpStatus.OK_200.toString(),
-                        content = [OpenApiContent(UsersModel::class)]
-                ),
-                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-                OpenApiResponse(
-                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                )
-            ]
+        queryParams = [
+            OpenApiParam(
+                name = "find",
+                type = String::class,
+                description = "find online/offline users. default value is online"
+            )
+        ],
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(UsersModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
     )
     fun users(ctx: Context) {
         val find = ctx.queryParam("find", default = "online")
@@ -74,26 +74,26 @@ object PurifierUserController : PurifierControllerBase() {
     }
 
     @OpenApi(
-            pathParams = [
-                OpenApiParam(
-                        name = "username"
-                )
-            ],
-            requestBody = OpenApiRequestBody(
-                    content = [OpenApiContent(SetUserGameModeModel::class)]
+        pathParams = [
+            OpenApiParam(
+                name = "username"
+            )
+        ],
+        requestBody = OpenApiRequestBody(
+            content = [OpenApiContent(SetUserGameModeModel::class)]
+        ),
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(SingleUserModel::class)]
             ),
-            responses = [
-                OpenApiResponse(
-                        status = HttpStatus.OK_200.toString(),
-                        content = [OpenApiContent(SingleUserModel::class)]
-                ),
-                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-                OpenApiResponse(
-                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                        content = [OpenApiContent(CommonResponseModel::class)]
-                )
-            ]
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
     )
     fun setUserGameMode(ctx: Context) {
         val paramUser = ctx.pathParam(":username")
