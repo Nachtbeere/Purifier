@@ -13,30 +13,30 @@ object PurifierServerController : PurifierControllerBase() {
     private val userLogic = PurifierUserLogic()
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun health(ctx: Context) {
         ctx.json(this.successResponse())
     }
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(ServerInfoModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(ServerInfoModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun info(ctx: Context) {
         val payload = serverLogic.serverInfo()
@@ -49,18 +49,18 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(ServerSystemInfoModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(ServerSystemInfoModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun systemInfo(ctx: Context) {
         val payload = serverLogic.systemInfo()
@@ -73,31 +73,49 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody([OpenApiContent(RequestUserModel::class)]),
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(status = HttpStatus.NOT_FOUND_404.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            requestBody = OpenApiRequestBody([OpenApiContent(RequestUserModel::class)]),
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(status = HttpStatus.NOT_FOUND_404.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun addWhitelist(ctx: Context) {
         val req = ctx.bodyAsClass(RequestUserModel::class.java)
         val user = userLogic.fetchUser(req.username)
         if (user != null) {
+            var isAlreadyAdded = false
             when (user) {
-                is OfflinePlayer -> user.isWhitelisted = true
-                is Player -> user.isWhitelisted = true
+                is OfflinePlayer -> {
+                    if (user.isWhitelisted) {
+                        isAlreadyAdded = true
+                    } else {
+                        user.isWhitelisted = true
+                    }
+                }
+                is Player -> {
+                    if (user.isWhitelisted) {
+                        isAlreadyAdded = true
+                    } else {
+                        user.isWhitelisted = true
+                    }
+                }
             }
-            userLogic.minecraftServer.reloadWhitelist()
-            ctx.json(this.successResponse())
+            if (isAlreadyAdded) {
+                ctx.status(HttpStatus.CONFLICT_409)
+                ctx.json(this.failedResponse())
+            } else {
+                userLogic.minecraftServer.reloadWhitelist()
+                ctx.json(this.successResponse())
+            }
         } else {
             ctx.status(HttpStatus.NOT_FOUND_404)
             ctx.json(this.failedResponse())
@@ -105,31 +123,49 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody([OpenApiContent(RequestUserModel::class)]),
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(status = HttpStatus.NOT_FOUND_404.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            requestBody = OpenApiRequestBody([OpenApiContent(RequestUserModel::class)]),
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(status = HttpStatus.NOT_FOUND_404.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun removeWhitelist(ctx: Context) {
         val req = ctx.bodyAsClass(RequestUserModel::class.java)
         val user = userLogic.fetchUser(req.username)
         if (user != null) {
+            var isAlreadyRemoved = false
             when (user) {
-                is OfflinePlayer -> user.isWhitelisted = false
-                is Player -> user.isWhitelisted = false
+                is OfflinePlayer -> {
+                    if (user.isWhitelisted) {
+                        user.isWhitelisted = false
+                    } else {
+                        isAlreadyRemoved = true
+                    }
+                }
+                is Player -> {
+                    if (user.isWhitelisted) {
+                        user.isWhitelisted = false
+                    } else {
+                        isAlreadyRemoved = true
+                    }
+                }
             }
-            userLogic.minecraftServer.reloadWhitelist()
-            ctx.json(this.successResponse())
+            if (isAlreadyRemoved) {
+                ctx.status(HttpStatus.CONFLICT_409)
+                ctx.json(this.failedResponse())
+            } else {
+                userLogic.minecraftServer.reloadWhitelist()
+                ctx.json(this.successResponse())
+            }
         } else {
             ctx.status(HttpStatus.NOT_FOUND_404)
             ctx.json(this.failedResponse())
@@ -137,30 +173,49 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody([OpenApiContent(RequestUserModel::class)]),
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(status = HttpStatus.NOT_FOUND_404.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            requestBody = OpenApiRequestBody([OpenApiContent(RequestUserModel::class)]),
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(status = HttpStatus.NOT_FOUND_404.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun addOp(ctx: Context) {
         val req = ctx.bodyAsClass(RequestUserModel::class.java)
         val user = userLogic.fetchUser(req.username)
         if (user != null) {
+            var isAlreadyOp = false
             when (user) {
-                is OfflinePlayer -> user.isOp = true
-                is Player -> user.isOp = true
+                is OfflinePlayer -> {
+                    if (user.isOp) {
+                        isAlreadyOp = true
+                    } else {
+                        user.isOp = true
+                    }
+                }
+                is Player -> {
+                    if (user.isOp) {
+                        isAlreadyOp = true
+                    } else {
+                        user.isOp = true
+
+                    }
+                }
             }
-            ctx.json(this.successResponse())
+            if (isAlreadyOp) {
+                ctx.status(HttpStatus.CONFLICT_409)
+                ctx.json(this.failedResponse())
+            } else {
+                ctx.json(this.successResponse())
+            }
         } else {
             ctx.status(HttpStatus.NOT_FOUND_404)
             ctx.json(this.failedResponse())
@@ -168,29 +223,47 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody([OpenApiContent(RequestUserModel::class)]),
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            requestBody = OpenApiRequestBody([OpenApiContent(RequestUserModel::class)]),
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun removeOp(ctx: Context) {
         val req = ctx.bodyAsClass(RequestUserModel::class.java)
         val user = userLogic.fetchUser(req.username)
         if (user != null) {
+            var isAlreadyDeOp = false
             when (user) {
-                is OfflinePlayer -> user.isOp = false
-                is Player -> user.isOp = false
+                is OfflinePlayer -> {
+                    if (user.isOp) {
+                        user.isOp = false
+                    } else {
+                        isAlreadyDeOp = true
+                    }
+                }
+                is Player -> {
+                    if (user.isOp) {
+                        user.isOp = false
+                    } else {
+                        isAlreadyDeOp = true
+                    }
+                }
             }
-            ctx.json(this.successResponse())
+            if (isAlreadyDeOp) {
+                ctx.status(HttpStatus.CONFLICT_409)
+                ctx.json(this.failedResponse())
+            } else {
+                ctx.json(this.successResponse())
+            }
         } else {
             ctx.status(HttpStatus.NOT_FOUND_404)
             ctx.json(this.failedResponse())
@@ -198,19 +271,19 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        requestBody = OpenApiRequestBody([OpenApiContent(SetBroadcastModel::class)]),
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            requestBody = OpenApiRequestBody([OpenApiContent(SetBroadcastModel::class)]),
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun broadcast(ctx: Context) {
         val req = ctx.bodyAsClass(SetBroadcastModel::class.java)
@@ -224,18 +297,18 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
-            OpenApiResponse(
-                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            )
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+                OpenApiResponse(
+                        status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                )
+            ]
     )
     fun save(ctx: Context) {
         val payload = serverLogic.save()
@@ -248,14 +321,14 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString())
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString())
+            ]
     )
     fun reload(ctx: Context) {
         serverLogic.reload()
@@ -263,14 +336,14 @@ object PurifierServerController : PurifierControllerBase() {
     }
 
     @OpenApi(
-        responses = [
-            OpenApiResponse(
-                status = HttpStatus.OK_200.toString(),
-                content = [OpenApiContent(CommonResponseModel::class)]
-            ),
-            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
-            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString())
-        ]
+            responses = [
+                OpenApiResponse(
+                        status = HttpStatus.OK_200.toString(),
+                        content = [OpenApiContent(CommonResponseModel::class)]
+                ),
+                OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+                OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString())
+            ]
     )
     fun shutdown(ctx: Context) {
         serverLogic.shutdown()
