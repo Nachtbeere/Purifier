@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.nachtbeere.minecraft.purifier"
-version = "0.9-SNAPSHOT"
+version = "0.10-SNAPSHOT"
 
 repositories {
     mavenLocal()
