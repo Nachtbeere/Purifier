@@ -4,9 +4,11 @@ import net.nachtbeere.minecraft.purifier.models.*
 import net.nachtbeere.minecraft.purifier.logics.*
 import io.javalin.http.Context
 import io.javalin.plugin.openapi.annotations.*
+import org.bukkit.BanList
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.eclipse.jetty.http.HttpStatus
+import java.util.*
 
 object PurifierServerController : PurifierControllerBase() {
     private val serverLogic = PurifierServerLogic()
@@ -164,6 +166,114 @@ object PurifierServerController : PurifierControllerBase() {
                 ctx.json(this.failedResponse())
             } else {
                 userLogic.minecraftServer.reloadWhitelist()
+                ctx.json(this.successResponse())
+            }
+        } else {
+            ctx.status(HttpStatus.NOT_FOUND_404)
+            ctx.json(this.failedResponse())
+        }
+    }
+
+    @OpenApi(
+        requestBody = OpenApiRequestBody([OpenApiContent(RequestBanModel::class)]),
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(status = HttpStatus.NOT_FOUND_404.toString()),
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
+    )
+    fun addBan(ctx: Context) {
+        val req = ctx.bodyAsClass(RequestBanModel::class.java)
+        val user = userLogic.fetchUser(req.username)
+        if (user != null) {
+            var isAlreadyAdded = false
+            when (user) {
+                is OfflinePlayer -> {
+                    if (user.isBanned) {
+                        isAlreadyAdded = true
+                    } else {
+                        // Can't access .addBan() method. because it's restricted by "Named arguments are not allowed for non-Kotlin functions"
+                        var banlist = serverLogic.minecraftServer
+                            .getBanList(BanList.Type.NAME)
+                    }
+                }
+                is Player -> {
+                    if (user.isBanned) {
+                        isAlreadyAdded = true
+                    } else {
+                        // Can't access .addBan() method. because it's restricted by "Named arguments are not allowed for non-Kotlin functions"
+                        var banlist = serverLogic.minecraftServer
+                            .getBanList(BanList.Type.NAME)
+                    }
+                }
+            }
+            if (isAlreadyAdded) {
+                ctx.status(HttpStatus.CONFLICT_409)
+                ctx.json(this.failedResponse())
+            } else {
+                serverLogic.minecraftServer.reloadWhitelist()
+                ctx.json(this.successResponse())
+            }
+        } else {
+            ctx.status(HttpStatus.NOT_FOUND_404)
+            ctx.json(this.failedResponse())
+        }
+    }
+
+    @OpenApi(
+        requestBody = OpenApiRequestBody([OpenApiContent(RequestBanModel::class)]),
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(status = HttpStatus.NOT_FOUND_404.toString()),
+            OpenApiResponse(
+                status = HttpStatus.INTERNAL_SERVER_ERROR_500.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
+    )
+    fun removeBan(ctx: Context) {
+        val req = ctx.bodyAsClass(RequestBanModel::class.java)
+        val user = userLogic.fetchUser(req.username)
+        if (user != null) {
+            var isAlreadyRemoved = false
+            when (user) {
+                is OfflinePlayer -> {
+                    if (user.isBanned) {
+                        // Can't access .addBan() method. because it's restricted by "Named arguments are not allowed for non-Kotlin functions"
+                        var banlist = serverLogic.minecraftServer
+                            .getBanList(BanList.Type.NAME)
+                    } else {
+                        isAlreadyRemoved = true
+                    }
+                }
+                is Player -> {
+                    if (user.isBanned) {
+                        // Can't access .addBan() method. because it's restricted by "Named arguments are not allowed for non-Kotlin functions"
+                        var banlist = serverLogic.minecraftServer
+                            .getBanList(BanList.Type.NAME)
+                    } else {
+                        isAlreadyRemoved = true
+                    }
+                }
+            }
+            if (isAlreadyRemoved) {
+                ctx.status(HttpStatus.CONFLICT_409)
+                ctx.json(this.failedResponse())
+            } else {
+                serverLogic.minecraftServer.reloadWhitelist()
                 ctx.json(this.successResponse())
             }
         } else {
@@ -350,3 +460,7 @@ object PurifierServerController : PurifierControllerBase() {
         ctx.json(this.successResponse())
     }
 }
+//
+//private fun BanList.addBan() {
+//    TODO("Not yet implemented")
+//}
