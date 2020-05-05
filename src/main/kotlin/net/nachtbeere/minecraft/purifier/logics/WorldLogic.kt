@@ -25,17 +25,40 @@ class PurifierWorldLogic : PurifierLogicBase() {
             val worlds = arrayListOf<CurrentTimeModel>()
             minecraftServer.worlds.iterator().forEach { w ->
                 worlds.add(
-                        CurrentTimeModel(
-                                worldName = w.name,
-                                currentTime = GameTimeModel(
-                                        time = w.time,
-                                        age = w.fullTime
-                                )
+                    CurrentTimeModel(
+                        worldName = w.name,
+                        currentTime = GameTimeModel(
+                            time = w.time,
+                            age = w.fullTime
                         )
+                    )
                 )
             }
             worlds
         } as ArrayList<CurrentTimeModel>?
+    }
+
+    fun time(worldName: String): CurrentTimeModel? {
+        return this.futureTask {
+            val targetWorld: World? = world(worldName)
+            if (targetWorld != null) {
+                CurrentTimeModel(
+                    worldName = targetWorld.name,
+                    currentTime = GameTimeModel(
+                        time = targetWorld.time,
+                        age = targetWorld.fullTime
+                    )
+                )
+            } else {
+                CurrentTimeModel(
+                    worldName = "",
+                    currentTime = GameTimeModel(
+                        time = 0,
+                        age = 0
+                    )
+                )
+            }
+        } as CurrentTimeModel?
     }
 
     fun setTime(worldName: String, moment: String): HttpStatusCode? {

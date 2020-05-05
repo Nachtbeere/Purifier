@@ -43,3 +43,4 @@ class CurrentTimeModel(
 ) : BaseResponseModel()
 
 class GameWorldsModel(val worlds: ArrayList<*>) : BaseResponseModel()
+class GameWorldModel(val world: Any?) : BaseResponseModel()

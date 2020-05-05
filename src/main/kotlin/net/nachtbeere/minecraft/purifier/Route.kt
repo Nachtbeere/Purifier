@@ -25,6 +25,7 @@ fun route(app: Javalin) {
                 ApiBuilder.path("worlds") {
 //                    ApiBuilder.get(PurifierWorldsController::worlds, roles(Permission.READ))
                     ApiBuilder.get("/current-time", PurifierWorldController::currentTime, roles(Permission.READ))
+                    ApiBuilder.get("/:world/time", PurifierWorldController::time, roles(Permission.READ))
                     ApiBuilder.put("/:world/time", PurifierWorldController::setTime, roles(Permission.WRITE))
                     ApiBuilder.put("/:world/time/manual", PurifierWorldController::setManualTime, roles(Permission.WRITE))
                     ApiBuilder.put("/:world/storm", PurifierWorldController::toggleStorm, roles(Permission.WRITE))

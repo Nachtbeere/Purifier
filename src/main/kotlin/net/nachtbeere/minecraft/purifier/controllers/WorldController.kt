@@ -108,6 +108,31 @@ object PurifierWorldController : PurifierControllerBase() {
             )
         ]
     )
+    fun time(ctx: Context) {
+        val paramWorld = ctx.pathParam(":world")
+        val payload = worldLogic.time(paramWorld)
+        if (payload != null && payload.worldName == paramWorld) {
+            ctx.json(GameWorldModel(world = payload))
+        } else {
+            ctx.status(HttpStatus.NOT_FOUND_404)
+            ctx.json(failedResponse())
+        }
+    }
+
+    @OpenApi(
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.NOT_FOUND_404.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
+    )
     fun toggleStorm(ctx: Context) {
         val paramWorld = ctx.pathParam(":world")
         val statusCode = worldLogic.toggleStorm(paramWorld)
