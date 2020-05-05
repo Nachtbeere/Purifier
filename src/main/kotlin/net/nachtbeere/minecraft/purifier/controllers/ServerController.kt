@@ -460,7 +460,3 @@ object PurifierServerController : PurifierControllerBase() {
         ctx.json(this.successResponse())
     }
 }
-//
-//private fun BanList.addBan() {
-//    TODO("Not yet implemented")
-//}
