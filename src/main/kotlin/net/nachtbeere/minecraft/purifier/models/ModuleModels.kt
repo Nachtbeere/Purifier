@@ -24,6 +24,11 @@ class MojangUserModel(
 
 class WorldModel(val name: String)
 
+class CurrentTimeModel(
+    val worldName: String,
+    val currentTime: GameTimeModel
+)
+
 data class AuthUser(val name: String, val password: String, val roles: List<String>) {
     object ModelMapper {
         fun from(map: LinkedHashMap<String, HashMap<String, Any>>): AuthUser {

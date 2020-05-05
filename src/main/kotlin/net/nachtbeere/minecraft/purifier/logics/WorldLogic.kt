@@ -110,9 +110,19 @@ class PurifierWorldLogic : PurifierLogicBase() {
         } as HttpStatusCode?
     }
 
-    fun worlds() {
+    fun worldsInfo() {
         this.futureTask {
             minecraftServer.worlds.iterator().forEach { w ->
+            }
+        }
+    }
+
+    fun worldInfo(targetName: String) {
+        this.futureTask {
+            val targetWorld: World? = world(targetName)
+            if (targetWorld != null) {
+//                targetWorld.
+
             }
         }
     }

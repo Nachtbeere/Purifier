@@ -37,10 +37,5 @@ class UsersModel(
 
 class SingleUserModel(val user: UserModel?) : BaseResponseModel()
 
-class CurrentTimeModel(
-        val worldName: String,
-        val currentTime: GameTimeModel
-) : BaseResponseModel()
-
 class GameWorldsModel(val worlds: ArrayList<*>) : BaseResponseModel()
 class GameWorldModel(val world: Any?) : BaseResponseModel()
