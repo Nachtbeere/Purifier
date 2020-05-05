@@ -60,6 +60,14 @@ for check api access permission.
     * all <code>/server</code> api.
         * it contains <code>broadcast</code>, <code>reload</code> and <code>shutdown</code>
 
+## Known Issues
+* Functions not supported
+    * Whitelist function
+        * The original minecraft api has [bug(MC-162683)](https://bugs.mojang.com/browse/MC-162683)
+    * Ban function
+        * This plugin based on kotlin. It can't support for named arguments for non-Kotlin functions.
+        * We can't use minecraftServer.getBanList(BanList.Type.NAME).addBan()
+        
 ## Quick Start
 
 1. Run <code>$ gradlew shadowJar</code>
