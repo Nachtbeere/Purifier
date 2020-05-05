@@ -3,10 +3,7 @@ package net.nachtbeere.minecraft.purifier.controllers
 import net.nachtbeere.minecraft.purifier.models.*
 import net.nachtbeere.minecraft.purifier.logics.PurifierWorldLogic
 import io.javalin.http.Context
-import io.javalin.plugin.openapi.annotations.OpenApi
-import io.javalin.plugin.openapi.annotations.OpenApiContent
-import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
-import io.javalin.plugin.openapi.annotations.OpenApiResponse
+import io.javalin.plugin.openapi.annotations.*
 import org.eclipse.jetty.http.HttpStatus
 
 object PurifierWorldController : PurifierControllerBase() {
@@ -37,6 +34,9 @@ object PurifierWorldController : PurifierControllerBase() {
     }
 
     @OpenApi(
+        pathParams = [
+            OpenApiParam(name = "world")
+        ],
         requestBody = OpenApiRequestBody(
             content = [OpenApiContent(SetTimeModel::class)]
         ),
@@ -66,6 +66,9 @@ object PurifierWorldController : PurifierControllerBase() {
     }
 
     @OpenApi(
+        pathParams = [
+            OpenApiParam(name = "world")
+        ],
         requestBody = OpenApiRequestBody(
             content = [OpenApiContent(SetManualTimeModel::class)]
         ),
@@ -95,6 +98,37 @@ object PurifierWorldController : PurifierControllerBase() {
     }
 
     @OpenApi(
+        pathParams = [
+            OpenApiParam(name = "world")
+        ],
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.NOT_FOUND_404.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
+    )
+    fun time(ctx: Context) {
+        val paramWorld = ctx.pathParam(":world")
+        val payload = worldLogic.time(paramWorld)
+        if (payload != null && payload.worldName == paramWorld) {
+            ctx.json(GameWorldModel(world = payload))
+        } else {
+            ctx.status(HttpStatus.NOT_FOUND_404)
+            ctx.json(failedResponse())
+        }
+    }
+
+    @OpenApi(
+        pathParams = [
+            OpenApiParam(name = "world")
+        ],
         responses = [
             OpenApiResponse(
                 status = HttpStatus.OK_200.toString(),
@@ -133,8 +167,29 @@ object PurifierWorldController : PurifierControllerBase() {
             )
         ]
     )
-    fun worlds(ctx: Context) {
-        val statusCode = worldLogic.worlds()
+    fun worldsInfo(ctx: Context) {
+        val statusCode = worldLogic.worldsInfo()
         ctx.json(failedResponse())
+    }
+
+    @OpenApi(
+        pathParams = [
+            OpenApiParam(name = "world")
+        ],
+        responses = [
+            OpenApiResponse(
+                status = HttpStatus.OK_200.toString(),
+                content = [OpenApiContent(GameWorldsModel::class)]
+            ),
+            OpenApiResponse(status = HttpStatus.UNAUTHORIZED_401.toString()),
+            OpenApiResponse(status = HttpStatus.FORBIDDEN_403.toString()),
+            OpenApiResponse(
+                status = HttpStatus.NOT_FOUND_404.toString(),
+                content = [OpenApiContent(CommonResponseModel::class)]
+            )
+        ]
+    )
+    fun worldInfo(ctx: Context) {
+
     }
 }
