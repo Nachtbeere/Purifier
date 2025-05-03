@@ -1,5 +1,5 @@
 # Purifier
-[![travis.ci](https://travis-ci.com/Nachtbeere/Purifier.svg?branch=master)](https://travis-ci.com/github/Nachtbeere/Purifier)
+> ⚠️ This project is no longer maintained. It has been archived for historical reference.
 
 A RESTful API Endpoint Plugin for Bukkit/Spigot API Server
 
